@@ -127,6 +127,8 @@ var GameManager = function (datas) {
             _.each(callbacks, function (callb) {
                 if (enabled) {
                     callb();
+                    
+                    //yep
 
                     if (updateRequired) {
                         clk.stop();
