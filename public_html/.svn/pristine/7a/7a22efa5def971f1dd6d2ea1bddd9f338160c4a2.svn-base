@@ -1,0 +1,21 @@
+
+// enregistrement automatique de ce module
+
+window.registeredModules["seg7"] = function (manager) {
+
+    var displayHtml = $('<div class="module-seg7-displayer">0</div>');
+    
+    var listenedVariable;
+
+    this.initialize = function (moduleDefinition) {
+        listenedVariable = manager.variables[moduleDefinition.variable];
+
+        manager.nmanager.listen("variablechange", moduleDefinition.variable, "", function (data) {
+            displayHtml.html(data);
+        });
+    };
+
+    this.display = function () {
+        return displayHtml;
+    };
+};

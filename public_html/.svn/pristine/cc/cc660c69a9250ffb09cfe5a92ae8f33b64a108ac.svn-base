@@ -1,0 +1,14 @@
+
+// enregistrement automatique de ce module
+
+window.registeredModules["seg7"] =  function() {
+    
+    var manager = window.gameManager;
+    
+    var display = '<div class="module-seg7-displayer">25</div>';
+    
+    
+    this.display = function() {
+        return display;
+    };
+};

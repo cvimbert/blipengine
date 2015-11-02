@@ -1,0 +1,43 @@
+/* 
+    Created on : 7 oct. 2015, 08:11:05
+    Author     : Christophe
+*/
+
+#gamecontainer {
+    position: relative;
+    width: 773px;
+    height: 468px;
+}
+
+.game-element {
+    position: absolute;
+}
+
+#spritescontainer {
+    position: absolute;
+    left: 207px;
+    top: 114px;
+}
+
+#spritescontainer .game-element {
+    opacity: 0;
+}
+
+#spritescontainer .enabled {
+    opacity: 1;
+}
+
+#container {
+    width: 773px;
+    height: 468px;
+}
+
+#controlscontainer .game-element {
+    cursor: pointer;
+}
+
+#console {
+    height: 80px;
+    font-family: Arial;
+    font-size: 13px;
+}

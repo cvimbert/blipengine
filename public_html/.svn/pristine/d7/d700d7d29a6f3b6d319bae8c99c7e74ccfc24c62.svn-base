@@ -1,0 +1,32 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 27 oct. 2015, 19:11:44
+    Author     : Christophe
+*/
+
+
+.module-seg7-displayer {
+    font-family: 'Digital-7Italic';
+    font-size: 38px;
+    text-align: right;
+}
+
+
+@font-face {
+  font-family: 'Digital-7Italic';
+  src: url('font/Digital-7Italic.eot?#iefix') format('embedded-opentype'),  url('font/Digital-7Italic.woff') format('woff'), url('font/Digital-7Italic.ttf')  format('truetype'), url('font/Digital-7Italic.svg#Digital-7Italic') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Digital-7';
+  src: url('font/Digital-7.eot?#iefix') format('embedded-opentype'),  url('font/Digital-7.woff') format('woff'), url('font/Digital-7.ttf')  format('truetype'), url('font/Digital-7.svg#Digital-7') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
