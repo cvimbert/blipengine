@@ -124,5 +124,8 @@ var modelDescriptor = {
     },
     ControlsList: {
         
+    },
+    Sprite: {
+        
     }
 };
