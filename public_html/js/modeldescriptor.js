@@ -2,18 +2,19 @@
 var modelDescriptor = {
     Sound: {
         id: "String",
-        file: "FileReference"
+        file: FileReference
     },
     Action: {
         id: "String",
         types: {
             displaysprite: {
-                sprite: "Sprite"
+                sprite: Sprite
             },
             showgroup: {
                 group: "SpritesGroup"
             },
             stopclock: {
+                
                 
                 
             },
