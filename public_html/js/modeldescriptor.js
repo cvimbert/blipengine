@@ -30,7 +30,7 @@ var modelDescriptor = {
                 sprite2: "Sprite"
             },
             timeinterval: {
-                time: "Time"
+                time: "TimeValue"
             }
         }
     },
