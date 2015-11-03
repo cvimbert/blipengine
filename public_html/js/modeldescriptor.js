@@ -15,6 +15,7 @@ var modelDescriptor = {
             },
             stopclock: {
                 
+                
             },
             startclock: {
                 
