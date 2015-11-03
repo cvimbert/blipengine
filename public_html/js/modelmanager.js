@@ -2,8 +2,8 @@
 
 var ModelManager = function () {
 
-    _.each(modelDescriptor, function () {
-        alert ("ok");
+    _.each(modelDescriptor, function (object, key) {
+        
     });
 
     return this;

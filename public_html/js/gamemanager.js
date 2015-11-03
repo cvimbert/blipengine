@@ -251,7 +251,6 @@ var GameManager = function (datas) {
             if (initialized) {
                 return;
             } else {
-                console.log("init des triggers");
                 initialized = true;
             }
 
