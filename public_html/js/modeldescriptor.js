@@ -1,10 +1,12 @@
 
 var modelDescriptor = {
     Control: {
+        indexable: true,
         id: "String",
         keyid: "ControlSprite"
     },
     Trigger: {
+        indexable: true,
         id: "String",
         action: "Action",
         condition: "Condition",
@@ -35,6 +37,7 @@ var modelDescriptor = {
         }
     },
     Variable: {
+        indexable: true,
         id: "String",
         types: {
             string: {
@@ -49,64 +52,82 @@ var modelDescriptor = {
         }
     },
     ActionsList: {
+        indexable: false,
         id: "String",
         actions: "Collection:Action"
     },
     RandomMode: {
+        indexable: false,
         enum: ["sequence", "sequencen"]
     },
     Time: {
+        indexable: false,
         value: "TimeValue"
     },
     GroupState: {
-        id: "String"
+        indexable: true,
+        id: "String",
+        group: "Group",
+        sprites: "Collection:Sprite"
     },
     ControlsList: {
+        indexable: false,
         id: "String",
         controls: "Collection:Control"
     },
     Sprite: {
+        indexable: true,
         id: "String",
         type: "SpriteFileReference",
         x: "Number",
         y: "Number"
     },
     ControlSprite: {
+        indexable: true,
         id: "String",
         type: "ControlSpriteFileReference",
         x: "Number",
         y: "Number"
     },
     SoundFileReference: {
+        indexable: true,
         filereference: "String"
     },
     SpriteFileReference: {
+        indexable: true,
         filereference: "String"
     },
     ControlSpriteFileReference: {
+        indexable: true,
         filereference: "String"
     },
     SpritesGroup: {
+        indexable: true,
         id: "String",
         sprites: "Collection:Sprite"
     },
     Sequence: {
+        indexable: true,
         id: "String",
         group: "SpritesGroup",
         loop: "String",
         steps: "Collection:GroupState"
     },
     TimeValue: {
+        indexable: false,
         value: "String"
     },
     ArithmeticOperator: {
+        indexable: false,
         enum: ["===", "!==", ">=", "<=", ">", "<"]
     },
     Sound: {
+        indexable: true,
         id: "String",
         file: "SoundFileReference"
     },
     Action: {
+        indexable: true,
         id: "String",
         types: {
             displaysprite: {
@@ -206,6 +227,7 @@ var modelDescriptor = {
         }
     },
     Condition: {
+        indexable: true,
         id: "String",
         types: {
             variablecheck: {
@@ -228,5 +250,14 @@ var modelDescriptor = {
                 step: "GroupState"
             }
         }
+    },
+    Number: {
+        indexable: false
+    },
+    String: {
+        indexable: false
+    },
+    Boolean: {
+        indexable: false
     }
 };
