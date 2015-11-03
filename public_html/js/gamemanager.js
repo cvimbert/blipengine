@@ -407,10 +407,6 @@ var GameManager = function (datas) {
                     gameClock.start();
                     break;
 
-                case "startclock":
-                    gameClock.start();
-                    break;
-
                 case "hidegroup":
                     manager.groups[actDef.group].hideAll();
                     break;

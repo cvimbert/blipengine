@@ -1298,6 +1298,18 @@ var datas = {
                 action: "startgame"
             },
             {
+                id: "start2",
+                type: "controlclick",
+                control: "start2",
+                action: "startgame"
+            },
+            {
+                id: "start3",
+                type: "controlclick",
+                control: "start3",
+                action: "startgame"
+            },
+            {
                 id: "goleft",
                 type: "controlclick",
                 control: "controlA",

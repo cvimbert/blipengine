@@ -5,7 +5,7 @@
             <url>public_html/js/gamemanager.js</url>
             <bookmark id="1">
                 <name/>
-                <line>823</line>
+                <line>833</line>
                 <key/>
             </bookmark>
         </file>
@@ -13,11 +13,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/index.html</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/controller.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/data.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/gamemanager.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/intervaldispatcher.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/soundmanager.js</file>
+            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/modeldescriptor.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/public_html/js/randomgenerator.js</file>
         </group>
     </open-files>
