@@ -1,93 +1,133 @@
 
 var modelDescriptor = {
+    Control: {
+        id: String
+    },
+    Trigger: {
+        id: String
+    },
+    Variable: {
+        id: String
+    },
+    ActionsList: {
+        id: String
+    },
+    RandomMode: {
+        
+    },
+    Time: {
+        value: String
+    },
+    GroupState: {
+        
+    },
+    ControlsList: {
+        
+    },
+    Sprite: {
+        
+    },
+    SoundFileReference: {
+        filereference: String
+    },
+    SpritesGroup: {
+        
+    },
+    Sequence: {
+        
+    },
+    TimeValue: {
+        
+    },
+    ArithmeticOperator: {
+        
+    },
     Sound: {
-        id: "String",
-        file: FileReference
+        id: String,
+        file: SoundFileReference
     },
     Action: {
-        id: "String",
+        id: String,
         types: {
             displaysprite: {
                 sprite: Sprite
             },
             showgroup: {
-                group: "SpritesGroup"
+                group: SpritesGroup
             },
             stopclock: {
-                
-                
                 
             },
             startclock: {
                 
             },
             hidegroup: {
-                group: "SpritesGroup"
+                group: SpritesGroup
             },
             stopsequence: {
-                sequence: "Sequence"
+                sequence: Sequence
             },
             nextinsequence: {
-                sequence: "Sequence"
+                sequence: Sequence
             },
             previousinsequence: {
-                sequence: "Sequence"
+                sequence: Sequence
             },
             nextloop: {
-                sequence: "Sequence"
+                sequence: Sequence
             },
             randomaction: {
-                actions: "ActionsList",
-                randmode: "RandomMode"
+                actions: ActionsList,
+                randmode: RandomMode
             },
             incvariable: {
-                variable: "Variable"
+                variable: Variable
             },
             decvariable: {
-                variable: "Variable"
+                variable: Variable
             },
             setvariable: {
-                variable: "Variable",
-                value: "*"
+                variable: Variable,
+                value: undefined
             },
             actions: {
-                actions: "ActionsList"
+                actions: ActionsList
             },
             resetsequence: {
-                sequence: "Sequence"
+                sequence: Sequence
             },
             togglestart: {
                 
             },
             wait: {
-                action: "Action",
-                time: "Time"
+                action: Action,
+                time: TimeValue
             },
             setsequencestep: {
-                sequence: "Sequence",
-                step: "GroupState"
+                sequence: Sequence,
+                step: GroupState
             },
             setgroupstate: {
-                grouprefresh: "Boolean",
-                state: "GroupState"
+                grouprefresh: Boolean,
+                state: GroupState
             },
             disabletrigger: {
-                trigger: "Trigger"
+                trigger: Trigger
             },
             enabletrigger: {
-                trigger: "Trigger"
+                trigger: Trigger
             },
             disablecontrol: {
-                control: "Control"
+                control: Control
             },
             enablecontrol: {
-                control: "Control"
+                control: Control
             },
             enablecontrols: {
-                controls: "ControlsList"
+                controls: ControlsList
             },
             disablecontrols: {
-                controls: "ControlsList"
+                controls: ControlsList
             },
             playsound: {
                 sound: Sound
@@ -99,33 +139,17 @@ var modelDescriptor = {
         }
     },
     Condition: {
-        id: "String"
-    },
-    Control: {
-        id: "String"
-    },
-    Trigger: {
-        id: "String"
-    },
-    Variable: {
-        id: "String"
-    },
-    ActionsList: {
-        
-    },
-    RandomMode: {
-        
-    },
-    Time: {
-        
-    },
-    GroupState: {
-        
-    },
-    ControlsList: {
-        
-    },
-    Sprite: {
-        
+        id: String,
+        types: {
+            variablecheck: {
+                variable: Variable,
+                operator: ArithmeticOperator,
+                value: undefined
+            },
+            sequencestep: {
+                sequence: Sequence,
+                step: GroupState
+            }
+        }
     }
 };

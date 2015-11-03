@@ -259,7 +259,7 @@ var GameManager = function (datas) {
             switch (triggerDef.type) {
                 case "controlclick":
                     var cont = manager.controls[triggerDef.control];
-                    cont.setClickEvent("touchstart", triggerDef);
+                    cont.setClickEvent("click", triggerDef);
                     break;
 
                 case "clock":
