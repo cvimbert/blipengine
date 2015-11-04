@@ -110,11 +110,11 @@ var ModelManager = function () {
         return isValid;
     }
 
-    this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
+    /*this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
     this.addItem("SpriteFileReference", "sr2", {filereference: "test2"});
     this.addItem("Sprite", "sp1", {type: "sr1", x: 23, y: 65});
     this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
-    this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
+    this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});*/
 
     return this;
 };
