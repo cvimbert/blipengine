@@ -4,6 +4,12 @@ var ModelManager = function () {
 
     var objectsIndex = [];
 
+    var COLLECTION = "collection";
+    var ENUMERATION = "enumeration";
+    var VARIABLE = "variable";
+    var OBJECTTYPE = "object_type";
+    var FINAL = "final";
+
     _.each(modelDescriptor, function (objectDesc, key) {
         if (objectDesc.indexable === true) {
             if (!objectsIndex[key]) {
@@ -70,22 +76,55 @@ var ModelManager = function () {
     }
 
     function isVariableProperty(prop) {
-        return false;
+        return _.isObject(prop) && !_.isArray(prop);
+    }
+
+    function isEnumeration(prop) {
+        return _.isArray(prop);
+    }
+
+    function getPropertyType(prop) {
+        //attention, ici l'ordre des tests est important, car une collection est aussi une string dans le descripteur
+
+        if (isCollection(prop)) {
+            return COLLECTION;
+        }
+
+        if (isEnumeration(prop)) {
+            return ENUMERATION;
+        }
+
+        if (isVariableProperty(prop)) {
+            return VARIABLE;
+        }
+
+        if (isFinalType(prop)) {
+            return FINAL;
+        }
+
+        if ((typeof prop) === "string") {
+            return OBJECTTYPE;
+        }
+
+        return null;
     }
 
 
     function validateObject(itemType, id, item) {
         var itemDescriptor = getDescriptor(itemType);
-        var isItemValid = true;
 
         // on teste chacune des propriétés du descriptor
-        _.each(itemDescriptor, function (descriptorPropertyType, descriptorPropertyKey) {
+        for (var descriptorPropertyKey in itemDescriptor) {
+
+            var descriptorPropertyType = itemDescriptor[descriptorPropertyKey];
+
             if (descriptorPropertyKey !== "indexable" && descriptorPropertyKey !== "id") {
 
                 // on commence déjà par verifier si une propriété avec le même nom existe dans l'item
                 if (!item[descriptorPropertyKey]) {
-                    isItemValid = false;
+                    //isItemValid = false;
                     console.log("propriété introuvable dans l'objet " + id + " : " + descriptorPropertyKey);
+                    return false;
                 }
 
 
@@ -94,70 +133,72 @@ var ModelManager = function () {
                 // et comment savoir que cette propriété est variable ?
 
                 var collection = [];
+                var pType = getPropertyType(descriptorPropertyType);
 
-                console.log(_.isObject(collection));
+                switch (pType) {
+                    case COLLECTION:
+                        descriptorPropertyType = getCollectionType(descriptorPropertyType);
 
-                if (isCollection(descriptorPropertyType)) {
-                    descriptorPropertyType = getCollectionType(descriptorPropertyType);
+                        if (!_.isArray(item)) {
+                            console.log("la collection doit être un array");
+                            return false;
+                        }
 
-                    if (!_.isArray(item)) {
-                        isItemValid = false;
-                        console.log("la collection doit être un array");
-                    } else {
                         collection = item;
-                    }
-                } else if (isVariableProperty(descriptorPropertyType)) {
-                    
-                } else {
-                    collection.push(item);
+                        break;
+
+                    case VARIABLE:
+
+                        break;
+
+                    default:
+                        collection.push(item);
                 }
 
                 var propertyDescriptor = getDescriptor(descriptorPropertyType);
 
-                _.each(collection, function (collectionItem) {
+                for (var i = 0; i < collection.length; i++) {
+
+                    var collectionItem = collection[i];
 
                     if (propertyDescriptor.indexable) {
                         // on teste si l'object cible existe dans l'index
                         if (!isItemInIndex(descriptorPropertyType, collectionItem[descriptorPropertyKey])) {
-                            isItemValid = false;
                             console.log("objet " + id + " : objet cible introuvable " + descriptorPropertyKey + " de type " + descriptorPropertyType);
+                            return false;
                         }
-
                     } else {
                         // on teste la conformité de la propriété
 
-                        if (isFinalType(descriptorPropertyType)) {
-                            // cas des Number, String et Boolean
+                        switch (pType) {
+                            case FINAL:
+                                var tp = typeof collectionItem[descriptorPropertyKey];
 
-                            var tp = typeof collectionItem[descriptorPropertyKey];
+                                if (!(tp === descriptorPropertyType.toLowerCase())) {
+                                    console.log("non conformité de type");
+                                    return false;
+                                }
+                                break;
 
-                            if (!(tp === descriptorPropertyType.toLowerCase())) {
-                                isItemValid = false;
-                                console.log("non conformité de type");
-                            }
-                        } else if (_.isArray(descriptorPropertyType)) {
-                            // cas des énumerations
-                            if (descriptorPropertyType.lastIndexOf(collectionItem) === -1) {
-                                isItemValid = false;
-                                console.log("Enumération: l'objet cible ne fait pas partie des valeurs énumérées");
-                            }
+                            case COLLECTION:
+                                if (descriptorPropertyType.lastIndexOf(collectionItem) === -1) {
+                                    console.log("Enumération: l'objet cible ne fait pas partie des valeurs énumérées");
+                                    return false;
+                                }
+                                break;
 
-                        } else {
-                            // cas par defaut
-
-                            if (!validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey])) {
-                                isItemValid = false;
-                                console.log("erreur sur la récursion");
-                            }
+                            default:
+                                if (!validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey])) {
+                                    console.log("erreur sur la récursion");
+                                    return false;
+                                }
                         }
                     }
-                });
-
-
+                }
             }
-        });
+        }
 
-        return isItemValid;
+        return true;
     }
 
     this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
