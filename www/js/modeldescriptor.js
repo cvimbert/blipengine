@@ -10,7 +10,7 @@ var modelDescriptor = {
         id: "String",
         action: "Action",
         condition: "Condition",
-        types: {
+        type: {
             controlclick: {
                 control: "Control"
             },
@@ -39,7 +39,7 @@ var modelDescriptor = {
     Variable: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             string: {
                 value: "String"
             },
@@ -58,7 +58,7 @@ var modelDescriptor = {
     },
     RandomMode: {
         indexable: false,
-        enum: ["sequence", "sequencen"]
+        value: ["sequence", "sequencen"]
     },
     Time: {
         indexable: false,
@@ -119,7 +119,7 @@ var modelDescriptor = {
     },
     ArithmeticOperator: {
         indexable: false,
-        enum: ["===", "!==", ">=", "<=", ">", "<"]
+        value: ["===", "!==", ">=", "<=", ">", "<"]
     },
     Sound: {
         indexable: true,
@@ -129,7 +129,7 @@ var modelDescriptor = {
     Action: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             displaysprite: {
                 sprite: "Sprite"
             },
@@ -167,7 +167,7 @@ var modelDescriptor = {
             },
             setvariable: {
                 variable: "Variable",
-                types: {
+                type: {
                     string: {
                         value: "String"
                     },
@@ -229,11 +229,11 @@ var modelDescriptor = {
     Condition: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             variablecheck: {
                 variable: "Variable",
                 operator: "ArithmeticOperator",
-                types: {
+                type: {
                     string: {
                         value: "String"
                     },
