@@ -48,7 +48,7 @@ var ModelManager = function () {
             return null;
         }
 
-        var isValid = validateObject(itemType, id, item);
+        var isValid = validateObject(itemType, id, item, item);
 
         if (isValid) {
             if (itemDescriptor.indexable) {
@@ -69,6 +69,10 @@ var ModelManager = function () {
 
     function getPropertyType(prop) {
         //attention, ici l'ordre des tests est important, car une collection est aussi une string dans le descripteur
+
+        if ((typeof prop) === "boolean") {
+            return null;
+        }
 
         if (!_.isObject(prop) && prop.lastIndexOf("Collection:") !== -1) {
             return COLLECTION;
@@ -94,33 +98,6 @@ var ModelManager = function () {
     }
 
 
-    function getVariableDescriptorKeys(descriptor) {
-
-        var keys = [];
-
-        for (var key in descriptor) {
-            if (key !== "indexable" && key !== "id" && getPropertyType(descriptor[key]) === VARIABLE) {
-                keys.push(key);
-            }
-        }
-
-        return keys;
-    }
-
-
-    function getCollectionDescriptorKeys(descriptor) {
-        var keys = [];
-
-        for (var key in descriptor) {
-            if (key !== "indexable" && key !== "id" && getPropertyType(descriptor[key]) === COLLECTION) {
-                keys.push(key);
-            }
-        }
-
-        return keys;
-    }
-
-
     function convertCollectionToTypedArray(type, collection) {
         var arr = [];
 
@@ -134,52 +111,58 @@ var ModelManager = function () {
     }
 
 
-    function flattenDescriptor(descriptor, item) {
-        var desc = _.clone(descriptor);
-        var variableKeys = getVariableDescriptorKeys(desc);
+    function flatten(descriptorToFlatten, item, destObject) {
+        for(var descKey in descriptorToFlatten) {
+            var descProp = descriptorToFlatten[descKey];
 
-        _.each(variableKeys, function (key) {
-            var itemValue = item[key];
+            if (getPropertyType(descProp) === VARIABLE) {
+                var itemValue = item[descKey];
 
-            if (itemValue) {
-                var usedDescBranch = desc[key][itemValue];
-
-                // on ajoute toutes les valeurs de cette branche au descripteur
-                for (var branchKey in usedDescBranch) {
-                    desc[branchKey] = usedDescBranch[branchKey];
+                if (itemValue && descriptorToFlatten[descKey][itemValue]) {
+                    if (!flatten(descriptorToFlatten[descKey][itemValue], item, destObject)) {
+                        return false;
+                    }
+                } else {
+                    console.log("impossible de faire un flatten de propriété variable sur le descripteur");
+                    return false;
                 }
-
-                delete desc[key];
             } else {
-                console.log("impossible de faire un flatten de variable sur le descripteur");
+                destObject[descKey] = descProp;
             }
+        }
 
-        });
-
-        return desc;
+        return true;
     }
 
 
-    function validateObject(itemType, id, item) {
+    function validateObject(itemType, id, item, baseitem) {
         var itemDescriptor = getDescriptor(itemType);
-        itemDescriptor = flattenDescriptor(itemDescriptor, item);
+
+        var flattenDesc = {};
+
+        if (!flatten(itemDescriptor, item, flattenDesc)) {
+            console.log("ici");
+            return false;
+        }
 
         // on teste chacune des propriétés du descriptor
-        for (var descriptorPropertyKey in itemDescriptor) {
+        for (var descriptorPropertyKey in flattenDesc) {
 
-            var descriptorPropertyType = itemDescriptor[descriptorPropertyKey];
+            var descriptorPropertyType = flattenDesc[descriptorPropertyKey];
+            var pType = getPropertyType(descriptorPropertyType);
 
             if (descriptorPropertyKey !== "indexable" && descriptorPropertyKey !== "id") {
 
                 // on commence déjà par verifier si une propriété avec le même nom existe dans l'item
-                if (!item[descriptorPropertyKey]) {
+                // sauf dans le cas des énumérations
+                if (pType !== ENUMERATION && !item[descriptorPropertyKey]) {
                     //isItemValid = false;
                     console.log("propriété introuvable dans l'objet " + id + " : " + descriptorPropertyKey);
                     return false;
                 }
 
                 var collection = [];
-                var pType = getPropertyType(descriptorPropertyType);
+
 
                 switch (pType) {
                     case COLLECTION:
@@ -203,7 +186,7 @@ var ModelManager = function () {
 
                     var collectionItem = collection[i];
 
-                    if (propertyDescriptor.indexable) {
+                    if (pType !== ENUMERATION && propertyDescriptor.indexable) {
                         // on teste si l'object cible existe dans l'index
                         if (!isItemInIndex(descriptorPropertyType, collectionItem[descriptorPropertyKey])) {
                             console.log("objet " + id + " : objet cible introuvable " + descriptorPropertyKey + " de type " + descriptorPropertyType);
@@ -230,7 +213,7 @@ var ModelManager = function () {
                                 break;
 
                             default:
-                                if (!validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey])) {
+                                if (!validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey], baseitem)) {
                                     console.log("erreur sur la récursion");
                                     return false;
                                 }
@@ -249,6 +232,8 @@ var ModelManager = function () {
     this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
     this.addItem("Action", "act1", {type: "displaysprite", sprite: "sp1"});
     this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
+    this.addItem("Variable", "vr1", {type: "string", value: "test"});
+    this.addItem("Condition", "cd1", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
 
     return this;
 };

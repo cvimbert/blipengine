@@ -233,7 +233,7 @@ var modelDescriptor = {
             variablecheck: {
                 variable: "Variable",
                 operator: "ArithmeticOperator",
-                type: {
+                variabletype: {
                     string: {
                         value: "String"
                     },
