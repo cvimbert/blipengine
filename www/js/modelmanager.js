@@ -20,7 +20,7 @@ var ModelManager = function () {
 
 
     function getDescriptor(type) {
-        return _.clone(modelDescriptor[type]);
+        return modelDescriptor[type];
     }
 
     function getReferencedItem(itemType, id) {
@@ -63,42 +63,26 @@ var ModelManager = function () {
         return (objectsIndex[objectType][id] !== undefined);
     }
 
-    function isFinalType(objectType) {
-        return objectType === "String" || objectType === "Number" || objectType === "Boolean";
-    }
-
-    function isCollection(prop) {
-        return prop.lastIndexOf("Collection:") !== -1;
-    }
-
     function getCollectionType(prop) {
         return prop.split("Collection:")[1];
-    }
-
-    function isVariableProperty(prop) {
-        return _.isObject(prop) && !_.isArray(prop);
-    }
-
-    function isEnumeration(prop) {
-        return _.isArray(prop);
     }
 
     function getPropertyType(prop) {
         //attention, ici l'ordre des tests est important, car une collection est aussi une string dans le descripteur
 
-        if (isCollection(prop)) {
+        if (!_.isObject(prop) && prop.lastIndexOf("Collection:") !== -1) {
             return COLLECTION;
         }
 
-        if (isEnumeration(prop)) {
+        if (_.isArray(prop)) {
             return ENUMERATION;
         }
 
-        if (isVariableProperty(prop)) {
+        if (_.isObject(prop) && !_.isArray(prop)) {
             return VARIABLE;
         }
 
-        if (isFinalType(prop)) {
+        if (prop === "String" || prop === "Number" || prop === "Boolean") {
             return FINAL;
         }
 
@@ -110,8 +94,75 @@ var ModelManager = function () {
     }
 
 
+    function getVariableDescriptorKeys(descriptor) {
+
+        var keys = [];
+
+        for (var key in descriptor) {
+            if (key !== "indexable" && key !== "id" && getPropertyType(descriptor[key]) === VARIABLE) {
+                keys.push(key);
+            }
+        }
+
+        return keys;
+    }
+
+
+    function getCollectionDescriptorKeys(descriptor) {
+        var keys = [];
+
+        for (var key in descriptor) {
+            if (key !== "indexable" && key !== "id" && getPropertyType(descriptor[key]) === COLLECTION) {
+                keys.push(key);
+            }
+        }
+
+        return keys;
+    }
+
+
+    function convertCollectionToTypedArray(type, collection) {
+        var arr = [];
+
+        _.each(collection, function (collectionItem) {
+            var obj = {};
+            obj[type] = collectionItem;
+            arr.push(obj);
+        });
+
+        return arr;
+    }
+
+
+    function flattenDescriptor(descriptor, item) {
+        var desc = _.clone(descriptor);
+        var variableKeys = getVariableDescriptorKeys(desc);
+
+        _.each(variableKeys, function (key) {
+            var itemValue = item[key];
+
+            if (itemValue) {
+                var usedDescBranch = desc[key][itemValue];
+
+                // on ajoute toutes les valeurs de cette branche au descripteur
+                for (var branchKey in usedDescBranch) {
+                    desc[branchKey] = usedDescBranch[branchKey];
+                }
+
+                delete desc[key];
+            } else {
+                console.log("impossible de faire un flatten de variable sur le descripteur");
+            }
+
+        });
+
+        return desc;
+    }
+
+
     function validateObject(itemType, id, item) {
         var itemDescriptor = getDescriptor(itemType);
+        itemDescriptor = flattenDescriptor(itemDescriptor, item);
 
         // on teste chacune des propriétés du descriptor
         for (var descriptorPropertyKey in itemDescriptor) {
@@ -127,11 +178,6 @@ var ModelManager = function () {
                     return false;
                 }
 
-
-                // reste un cas à traiter, celui des propriétés variables
-                // si on tombe sur une propriété variable, que fait-on ?
-                // et comment savoir que cette propriété est variable ?
-
                 var collection = [];
                 var pType = getPropertyType(descriptorPropertyType);
 
@@ -139,16 +185,12 @@ var ModelManager = function () {
                     case COLLECTION:
                         descriptorPropertyType = getCollectionType(descriptorPropertyType);
 
-                        if (!_.isArray(item)) {
+                        if (!_.isArray(item[descriptorPropertyKey])) {
                             console.log("la collection doit être un array");
                             return false;
                         }
 
-                        collection = item;
-                        break;
-
-                    case VARIABLE:
-
+                        collection = convertCollectionToTypedArray(descriptorPropertyKey, item[descriptorPropertyKey]);
                         break;
 
                     default:
@@ -180,7 +222,7 @@ var ModelManager = function () {
                                 }
                                 break;
 
-                            case COLLECTION:
+                            case ENUMERATION:
                                 if (descriptorPropertyType.lastIndexOf(collectionItem) === -1) {
                                     console.log("Enumération: l'objet cible ne fait pas partie des valeurs énumérées");
                                     return false;
@@ -205,7 +247,8 @@ var ModelManager = function () {
     this.addItem("SpriteFileReference", "sr2", {filereference: "test2"});
     this.addItem("Sprite", "sp1", {type: "sr1", x: 23, y: 65});
     this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
-    //this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
+    this.addItem("Action", "act1", {type: "displaysprite", sprite: "sp1"});
+    this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
 
     return this;
 };
