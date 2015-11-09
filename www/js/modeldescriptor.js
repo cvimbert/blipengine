@@ -70,6 +70,19 @@ var modelDescriptor = {
         group: "Group",
         sprites: "Collection:Sprite"
     },
+    ConditionalGroupStateSet: {
+        indexable: true,
+        id: "String",
+        group: "Group",
+        states: "Collection:ConditionalGroupState",
+        defaultstate: "ConditionalGroupState"
+    },
+    ConditionalGroupState: {
+        indexable: true,
+        id: "String",
+        state: "GroupState",
+        condition: "Condition"
+    },
     ControlsList: {
         indexable: false,
         id: "String",
@@ -91,15 +104,15 @@ var modelDescriptor = {
     },
     SoundFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String"
     },
     SpriteFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String"
     },
     ControlSpriteFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String"
     },
     SpritesGroup: {
         indexable: true,

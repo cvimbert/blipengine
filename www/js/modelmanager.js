@@ -1,4 +1,4 @@
-/* global modelDescriptor, _ */
+/* global modelDescriptor, _, data_test */
 
 var ModelManager = function () {
 
@@ -87,10 +87,10 @@ var ModelManager = function () {
 
     this.removeItem = function (itemId) {
         var item = itemsById[itemId];
-        
+
         delete (itemsById[itemId]);
         delete (objectsIndex[item.itemType][itemId]);
-        
+
     };
 
     function isItemInIndex(objectType, id) {
@@ -261,18 +261,81 @@ var ModelManager = function () {
         return true;
     }
 
-    this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
-    this.addItem("SpriteFileReference", "sr2", {filereference: "test2"});
-    this.addItem("Sprite", "sp1", {type: "sr1", x: 23, y: 65});
-    this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
-    this.addItem("Action", "act1", {type: "displaysprite", sprite: "sp1"});
-    this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
-    this.addItem("Variable", "vr1", {type: "string", value: "test"});
-    this.addItem("Condition", "cd1", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
-    this.addItem("Condition", "cd2", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
 
-    var uim = [];
-    this.getUsedInMapIndex("vr1", uim);
+    this.loadFromJSON = function (jsonFile, callback) {
+        $.getJSON(jsonFile, function (data) {
+            callback(data);
+        });
+    };
+
+
+    this.loadModel = function (model) {
+        _.each(model, function (groupContent, groupKey) {
+            _.each(groupContent, function (item) {
+                mmanager.addItem(groupKey, item.id, item);
+            });
+        });
+    };
+
+
+    this.save = function (model) {
+        var save_url = "http://127.0.0.1/models/enreg.php";
+        var filename = "test_model.json";
+        var data_test_ser = JSON.stringify(data_test);
+
+        var data = {
+            model: data_test_ser,
+            filename: filename
+        };
+
+        $.post(save_url, data, function (data) {
+            //console.log(data);
+        });
+    };
+
+
+    this.changeAttributeName = function (model, groupName, oldName, newName) {
+        _.each(model[groupName], function (item) {
+            item[newName] = item[oldName];
+            delete item[oldName];
+        });
+    };
+
+
+    this.createNewKey = function (model, groupName, keyName, value) {
+        _.each(model[groupName], function (item) {
+            item[keyName] = value;
+        });
+    };
+
+
+    this.deleteKey = function (model, groupName, keyName) {
+        _.each(model[groupName], function (item) {
+            delete item[keyName];
+        });
+    };
+
+    //this.save();
+    this.loadFromJSON("models/test_model.json", function (data) {
+
+    });
+
+    /*this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
+     this.addItem("SpriteFileReference", "sr2", {filereference: "test2"});
+     this.addItem("Sprite", "sp1", {type: "sr1", x: 23, y: 65});
+     this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
+     this.addItem("Action", "act1", {type: "displaysprite", sprite: "sp1"});
+     this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
+     this.addItem("Variable", "vr1", {type: "string", value: "test"});
+     this.addItem("Condition", "cd1", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
+     this.addItem("Condition", "cd2", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
+     
+     var uim = [];
+     this.getUsedInMapIndex("vr1", uim);*/
+
+    //this.loadModel(data_test);
+
+
 
     return this;
 };
