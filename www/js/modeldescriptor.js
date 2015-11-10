@@ -104,11 +104,13 @@ var modelDescriptor = {
     },
     SoundFileReference: {
         indexable: true,
-        file: "String"
+        file: "String",
+        package: ""
     },
     SpriteFileReference: {
         indexable: true,
-        file: "String"
+        file: "String",
+        package: "String"
     },
     ControlSpriteFileReference: {
         indexable: true,

@@ -278,23 +278,34 @@ var ModelManager = function () {
     };
 
 
-    this.save = function (model) {
+    this.loadModelGroup = function (model, groupName) {
+        _.each(model[groupName], function(item) {
+            mmanager.addItem(groupName, item.id, item);
+        });
+    };
+
+
+    this.save = function (model, filename, callback) {
         var save_url = "http://127.0.0.1/models/enreg.php";
-        var filename = "test_model.json";
-        var data_test_ser = JSON.stringify(data_test);
+        var data_test_ser = JSON.stringify(model);
 
         var data = {
             model: data_test_ser,
             filename: filename
         };
+        
+        console.log("et là ?");
 
-        $.post(save_url, data, function (data) {
-            //console.log(data);
+        $.post(save_url, data, function (dat) {
+            console.log(dat);
+            if (callback) {
+                callback(model);
+            }
         });
     };
 
 
-    this.changeAttributeName = function (model, groupName, oldName, newName) {
+    this.renameAttribute = function (model, groupName, oldName, newName) {
         _.each(model[groupName], function (item) {
             item[newName] = item[oldName];
             delete item[oldName];
@@ -309,16 +320,56 @@ var ModelManager = function () {
     };
 
 
+    this.applyToKeyValue = function (model, groupName, keyName, applyFunction) {
+        _.each(model[groupName], function (item) {
+            item[keyName] = applyFunction(item[keyName]);
+        });
+    };
+
+
     this.deleteKey = function (model, groupName, keyName) {
         _.each(model[groupName], function (item) {
             delete item[keyName];
         });
     };
 
-    //this.save();
-    this.loadFromJSON("models/test_model.json", function (data) {
 
-    });
+    this.duplicateGroup = function (model, groupName, newGroupName) {
+        var duplicated = [];
+
+        _.each(model[groupName], function (item) {
+            duplicated.push(_.clone(item));
+        });
+
+        model[newGroupName] = duplicated;
+    };
+
+
+    this.deleteGroup = function (model, groupName) {
+        delete model[groupName];
+    };
+
+
+    this.renameGroup = function (model, groupName, newGroupName) {
+        model[newGroupName] = model[groupName];
+        delete model[groupName];
+    };
+
+
+    function transpose() {
+        mmanager.renameAttribute(data_test, "SpriteFileReference", "type", "file");
+        mmanager.createNewKey(data_test, "SpriteFileReference", "package", "");
+        mmanager.createNewKey(data_test, "SoundFileReference", "package", "");
+        mmanager.save(data_test, "test4.json", onSaved);
+    }
+    
+    
+    function onSaved(model) {
+        console.log ("ok");
+        mmanager.loadModelGroup(model, "SoundFileReference");
+    };
+
+    transpose();
 
     /*this.addItem("SpriteFileReference", "sr1", {filereference: "test"});
      this.addItem("SpriteFileReference", "sr2", {filereference: "test2"});
