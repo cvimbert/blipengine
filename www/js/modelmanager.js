@@ -1,6 +1,8 @@
-/* global modelDescriptor, _, data_test */
+/* global modelDescriptor, _, data_test, datas_to_transpose */
 
 var ModelManager = function () {
+
+    var firstPassObject = [];
 
     var objectsIndex = [];
     var itemsById = [];
@@ -18,6 +20,8 @@ var ModelManager = function () {
             if (!objectsIndex[key]) {
                 objectsIndex[key] = {};
             }
+
+            firstPassObject[key] = {};
         }
     });
 
@@ -36,7 +40,7 @@ var ModelManager = function () {
             return false;
         } else {
             objectsIndex[itemType][id] = item;
-            console.log("Indexation de l'objet : " + id);
+            console.log("Indexation de l'objet " + itemType + " : " + id);
             return true;
         }
     }
@@ -52,7 +56,18 @@ var ModelManager = function () {
     };
 
 
-    this.addItem = function (itemType, id, item) {
+    this.firstPassLoading = function (model) {
+        _.each(model, function (group, groupName) {
+            firstPassObject[groupName] = [];
+
+            _.each(group, function (item) {
+                firstPassObject[groupName][item.id] = item;
+            });
+        });
+    };
+
+
+    this.addItem = function (itemType, id, item, firstPass) {
 
         var itemDescriptor = getDescriptor(itemType);
 
@@ -65,7 +80,7 @@ var ModelManager = function () {
         item.itemId = id;
 
         var itemsToRegister = [];
-        var isValid = validateObject(itemType, id, item, item, itemsToRegister);
+        var isValid = validateObject(itemType, id, item, item, itemsToRegister, firstPass);
 
         _.each(itemsToRegister, function (itemId) {
             if (!usedIn[itemId]) {
@@ -93,8 +108,13 @@ var ModelManager = function () {
 
     };
 
-    function isItemInIndex(objectType, id) {
-        return (objectsIndex[objectType][id] !== undefined);
+    function isItemInIndex(objectType, id, firstPass) {
+        if (!firstPass) {
+            return (objectsIndex[objectType][id] !== undefined);
+        } else {
+            return (firstPassObject[objectType][id] !== undefined);
+        }
+
     }
 
     function getCollectionType(prop) {
@@ -132,6 +152,11 @@ var ModelManager = function () {
     }
 
 
+    function isPropertyTypeOptional(pType) {
+        return (typeof pType) === "string" && pType.lastIndexOf(":optional") !== -1;
+    }
+
+
     function convertCollectionToTypedArray(type, collection) {
         var arr = [];
 
@@ -157,7 +182,7 @@ var ModelManager = function () {
                         return false;
                     }
                 } else {
-                    console.log("impossible de faire un flatten de propriété variable sur le descripteur");
+                    console.warn("impossible de faire un flatten de propriété variable sur le descripteur");
                     return false;
                 }
             } else {
@@ -169,7 +194,7 @@ var ModelManager = function () {
     }
 
 
-    function validateObject(itemType, id, item, baseitem, itemsToRegister) {
+    function validateObject(itemType, id, item, baseitem, itemsToRegister, firstPass) {
         var itemDescriptor = getDescriptor(itemType);
 
         var flattenDesc = {};
@@ -183,14 +208,24 @@ var ModelManager = function () {
         for (var descriptorPropertyKey in flattenDesc) {
 
             var descriptorPropertyType = flattenDesc[descriptorPropertyKey];
+
             var pType = getPropertyType(descriptorPropertyType);
+            
+            // vérifier de manière globale toutes les utilisations de isOptional
+            var isOptional = isPropertyTypeOptional(descriptorPropertyType);
+
+            if (isOptional) {
+                descriptorPropertyType = descriptorPropertyType.replace(":optional", "");
+            }
+
+
 
             if (descriptorPropertyKey !== "indexable" && descriptorPropertyKey !== "id") {
 
                 // on commence déjà par verifier si une propriété avec le même nom existe dans l'item
                 // sauf dans le cas des énumérations
-                if (pType !== ENUMERATION && !item[descriptorPropertyKey]) {
-                    console.log("propriété introuvable dans l'objet " + id + " : " + descriptorPropertyKey);
+                if (pType !== ENUMERATION && !item[descriptorPropertyKey] && item[descriptorPropertyKey] !== 0 && item[descriptorPropertyKey] !== false && !isOptional) {
+                    console.warn("propriété introuvable dans l'objet " + id + " : " + descriptorPropertyKey);
                     return false;
                 }
 
@@ -213,7 +248,10 @@ var ModelManager = function () {
                         collection.push(item);
                 }
 
+
+
                 var propertyDescriptor = getDescriptor(descriptorPropertyType);
+
 
                 for (var i = 0; i < collection.length; i++) {
 
@@ -221,11 +259,12 @@ var ModelManager = function () {
 
                     if (pType !== ENUMERATION && propertyDescriptor.indexable) {
                         // on teste si l'object cible existe dans l'index
-                        if (!isItemInIndex(descriptorPropertyType, collectionItem[descriptorPropertyKey])) {
-                            console.log("objet " + id + " : objet cible introuvable " + descriptorPropertyKey + " de type " + descriptorPropertyType);
+                        if (!isItemInIndex(descriptorPropertyType, collectionItem[descriptorPropertyKey], firstPass) && !isOptional) {
+                            console.warn("objet " + id + " : objet cible introuvable " + descriptorPropertyKey + " de type " + descriptorPropertyType);
                             return false;
                         } else {
-                            itemsToRegister.push(collectionItem[descriptorPropertyKey]);
+                            // à revoir, erreur systématique
+                            //itemsToRegister.push(collectionItem[descriptorPropertyKey]);
                         }
                     } else {
                         // on teste la conformité de la propriété
@@ -248,7 +287,7 @@ var ModelManager = function () {
                                 break;
 
                             default:
-                                if (!validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey], baseitem)) {
+                                if (!(isOptional && !collectionItem[descriptorPropertyKey]) && !validateObject(descriptorPropertyType, id, collectionItem[descriptorPropertyKey], baseitem, null, firstPass)) {
                                     console.log("erreur sur la récursion");
                                     return false;
                                 }
@@ -279,8 +318,8 @@ var ModelManager = function () {
 
 
     this.loadModelGroup = function (model, groupName) {
-        _.each(model[groupName], function(item) {
-            mmanager.addItem(groupName, item.id, item);
+        _.each(model[groupName], function (item) {
+            mmanager.addItem(groupName, item.id, item, true);
         });
     };
 
@@ -293,11 +332,8 @@ var ModelManager = function () {
             model: data_test_ser,
             filename: filename
         };
-        
-        console.log("et là ?");
 
         $.post(save_url, data, function (dat) {
-            console.log(dat);
             if (callback) {
                 callback(model);
             }
@@ -357,17 +393,91 @@ var ModelManager = function () {
 
 
     function transpose() {
-        mmanager.renameAttribute(data_test, "SpriteFileReference", "type", "file");
-        mmanager.createNewKey(data_test, "SpriteFileReference", "package", "");
-        mmanager.createNewKey(data_test, "SoundFileReference", "package", "");
-        mmanager.save(data_test, "test4.json", onSaved);
+        // transposition de l'ancien modèle vers le nouveau
+
+        // SoundFileReference
+        mmanager.renameGroup(datas_to_transpose, "sounds", "SoundFileReference");
+        mmanager.createNewKey(datas_to_transpose, "SoundFileReference", "package", "base");
+
+        // SpriteFileReference
+        mmanager.duplicateGroup(datas_to_transpose, "sprites", "SpriteFileReference");
+        mmanager.deleteKey(datas_to_transpose, "SpriteFileReference", "x");
+        mmanager.deleteKey(datas_to_transpose, "SpriteFileReference", "y");
+        mmanager.renameAttribute(datas_to_transpose, "SpriteFileReference", "type", "file");
+        mmanager.createNewKey(datas_to_transpose, "SpriteFileReference", "package", "base");
+
+        // DecorationFileReference
+        mmanager.renameAttribute(datas_to_transpose, "DecorationFileReference", "type", "file");
+
+        // Sprite
+        mmanager.renameGroup(datas_to_transpose, "sprites", "Sprite");
+
+        // Group
+        mmanager.renameGroup(datas_to_transpose, "groups", "SpritesGroup");
+
+        // Variable
+        mmanager.renameGroup(datas_to_transpose, "variables", "Variable");
+
+        // GroupState
+        mmanager.renameGroup(datas_to_transpose, "groupstates", "GroupState");
+
+        // ConditionalGroupState
+        mmanager.renameGroup(datas_to_transpose, "conditionalgroupstates", "ConditionalGroupState");
+        mmanager.renameAttribute(datas_to_transpose, "ConditionalGroupState", "default", "defaultstate");
+
+        // Condition
+        mmanager.renameGroup(datas_to_transpose, "conditions", "Condition");
+
+        // Action
+        mmanager.renameGroup(datas_to_transpose, "actions", "Action");
+
+        // Module
+        mmanager.renameGroup(datas_to_transpose, "modules", "Module");
+
+        // Trigger
+        mmanager.renameGroup(datas_to_transpose, "triggers", "Trigger");
+
+        // Sequence
+        mmanager.renameGroup(datas_to_transpose, "sequences", "Sequence");
+
+        // ControlSprite
+        mmanager.renameGroup(datas_to_transpose, "controls", "ControlSprite");
+
+        // Control
+        mmanager.renameGroup(datas_to_transpose, "controlsb", "Control");
+
+        // Background
+        mmanager.renameGroup(datas_to_transpose, "background", "Background");
+
+        // Foreground
+        mmanager.renameGroup(datas_to_transpose, "foreground", "Foreground");
+
+        mmanager.save(datas_to_transpose, "new_model.json", onSaved);
+
+        /*mmanager.renameAttribute(data_test, "SpriteFileReference", "type", "file");
+         mmanager.createNewKey(data_test, "SpriteFileReference", "package", "temp");
+         mmanager.createNewKey(data_test, "SoundFileReference", "package", "temp");*/
+        //mmanager.save(data_test, "new_model.json", onSaved);
     }
-    
-    
+
+
     function onSaved(model) {
-        console.log ("ok");
+
+        //return;
+        mmanager.firstPassLoading(model);
+
         mmanager.loadModelGroup(model, "SoundFileReference");
-    };
+        mmanager.loadModelGroup(model, "SpriteFileReference");
+        mmanager.loadModelGroup(model, "DecorationFileReference");
+        mmanager.loadModelGroup(model, "Sprite");
+        mmanager.loadModelGroup(model, "SpritesGroup");
+        mmanager.loadModelGroup(model, "Variable");
+        mmanager.loadModelGroup(model, "GroupState");
+        mmanager.loadModelGroup(model, "ConditionalGroupState");
+        mmanager.loadModelGroup(model, "Condition");
+        mmanager.loadModelGroup(model, "Action");
+    }
+    ;
 
     transpose();
 
@@ -377,16 +487,6 @@ var ModelManager = function () {
      this.addItem("Sprite", "sp2", {type: "sr2", x: 23, y: 65});
      this.addItem("Action", "act1", {type: "displaysprite", sprite: "sp1"});
      this.addItem("SpritesGroup", "gr1", {sprites: ["sp1", "sp2"]});
-     this.addItem("Variable", "vr1", {type: "string", value: "test"});
-     this.addItem("Condition", "cd1", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
-     this.addItem("Condition", "cd2", {type: "variablecheck", variable: "vr1", variabletype: "string", operator: "===", value: "ok"});
-     
-     var uim = [];
-     this.getUsedInMapIndex("vr1", uim);*/
+     this.addItem("Variable", "vr1", {type: "string", value: "test"});*/
 
-    //this.loadModel(data_test);
-
-
-
-    return this;
 };
