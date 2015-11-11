@@ -12,6 +12,7 @@ $(document).ready(function () {
     var layoutManager = new LayoutManager(datas.layout);
     var gameConsole = new GameConsole();
     var modelManager = new ModelManager();
+    var modelManagerV2 = new ModelManagerV2();
 
     window.gameManager = new GameManager(datas);
 

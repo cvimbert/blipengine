@@ -9,8 +9,8 @@ var modelDescriptor = {
         indexable: true,
         id: "String",
         action: "Action",
-        condition: "Condition",
-        types: {
+        condition: "Condition:optional",
+        type: {
             controlclick: {
                 control: "Control"
             },
@@ -32,14 +32,14 @@ var modelDescriptor = {
                 sprite2: "Sprite"
             },
             timeinterval: {
-                time: "TimeValue"
+                time: "Number"
             }
         }
     },
     Variable: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             string: {
                 value: "String"
             },
@@ -58,17 +58,30 @@ var modelDescriptor = {
     },
     RandomMode: {
         indexable: false,
-        enum: ["sequence", "sequencen"]
+        value: ["sequence", "sequencen"]
     },
     Time: {
         indexable: false,
-        value: "TimeValue"
+        time: "TimeValue"
     },
     GroupState: {
         indexable: true,
         id: "String",
-        group: "Group",
+        group: "SpritesGroup",
         sprites: "Collection:Sprite"
+    },
+    ConditionalGroupState: {
+        indexable: true,
+        id: "String",
+        group: "SpritesGroup",
+        states: "Collection:ConditionalGroupStateSet",
+        defaultstate: "GroupState"
+    },
+    ConditionalGroupStateSet: {
+        indexable: false,
+        id: "String",
+        state: "GroupState",
+        condition: "Condition"
     },
     ControlsList: {
         indexable: false,
@@ -82,24 +95,44 @@ var modelDescriptor = {
         x: "Number",
         y: "Number"
     },
+    Background: {
+        indexable: true,
+        id: "String",
+        type: "DecorationFileReference",
+        x: "Number",
+        y: "Number"
+    },
+    Foreground: {
+        indexable: true,
+        id: "String",
+        type: "DecorationFileReference",
+        x: "Number",
+        y: "Number"
+    },
     ControlSprite: {
         indexable: true,
         id: "String",
-        type: "ControlSpriteFileReference",
+        type: "ControlFileReference",
         x: "Number",
         y: "Number"
     },
     SoundFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String",
+        package: "String"
     },
     SpriteFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String",
+        package: "String"
     },
-    ControlSpriteFileReference: {
+    ControlFileReference: {
         indexable: true,
-        filereference: "String"
+        file: "String"
+    },
+    DecorationFileReference: {
+        indexable: true,
+        file: "String"
     },
     SpritesGroup: {
         indexable: true,
@@ -119,7 +152,7 @@ var modelDescriptor = {
     },
     ArithmeticOperator: {
         indexable: false,
-        enum: ["===", "!==", ">=", "<=", ">", "<"]
+        value: ["===", "!==", ">=", "<=", ">", "<"]
     },
     Sound: {
         indexable: true,
@@ -129,7 +162,7 @@ var modelDescriptor = {
     Action: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             displaysprite: {
                 sprite: "Sprite"
             },
@@ -156,8 +189,8 @@ var modelDescriptor = {
                 sequence: "Sequence"
             },
             randomaction: {
-                actions: "ActionsList",
-                randmode: "RandomMode"
+                actions: "Collection:Action",
+                randmode: "RandomMode:optional"
             },
             incvariable: {
                 variable: "Variable"
@@ -167,7 +200,7 @@ var modelDescriptor = {
             },
             setvariable: {
                 variable: "Variable",
-                types: {
+                variabletype: {
                     string: {
                         value: "String"
                     },
@@ -180,24 +213,33 @@ var modelDescriptor = {
                 }
             },
             actions: {
-                actions: "ActionsList"
+                actions: "Collection:Action"
             },
             resetsequence: {
                 sequence: "Sequence"
+            },
+            animiteration: {
+                sequence: "Sequence",
+                period: "Number",
+                iterations: "Number",
+                stepnumber: "Number:optional",
+                oniteration: "Action:optional",
+                onstep: "Action:optional",
+                oncomplete: "Action:optional"
             },
             togglestart: {
             },
             wait: {
                 action: "Action",
-                time: "TimeValue"
+                time: "Number"
             },
             setsequencestep: {
                 sequence: "Sequence",
                 step: "GroupState"
             },
             setgroupstate: {
-                grouprefresh: "Boolean",
-                state: "GroupState"
+                grouprefresh: "Boolean:optional",
+                state: "ConditionalGroupState"
             },
             disabletrigger: {
                 trigger: "Trigger"
@@ -212,13 +254,13 @@ var modelDescriptor = {
                 control: "Control"
             },
             enablecontrols: {
-                controls: "ControlsList"
+                
             },
             disablecontrols: {
-                controls: "ControlsList"
+                
             },
             playsound: {
-                sound: "Sound"
+                sound: "SoundFileReference"
             },
             cadencyup: {
                 factor: "Number"
@@ -229,11 +271,11 @@ var modelDescriptor = {
     Condition: {
         indexable: true,
         id: "String",
-        types: {
+        type: {
             variablecheck: {
                 variable: "Variable",
                 operator: "ArithmeticOperator",
-                types: {
+                variabletype: {
                     string: {
                         value: "String"
                     },
@@ -247,7 +289,7 @@ var modelDescriptor = {
             },
             sequencestep: {
                 sequence: "Sequence",
-                step: "GroupState"
+                step: "ConditionalGroupState"
             }
         }
     },

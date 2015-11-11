@@ -476,6 +476,7 @@ var ModelManager = function () {
         mmanager.loadModelGroup(model, "ConditionalGroupState");
         mmanager.loadModelGroup(model, "Condition");
         mmanager.loadModelGroup(model, "Action");
+        mmanager.loadModelGroup(model, "Trigger");
     }
     ;
 

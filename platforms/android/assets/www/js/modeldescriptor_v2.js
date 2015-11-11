@@ -2,8 +2,34 @@
 var modelDescriptor = {
     Control: {
         indexable: true,
-        id: "String",
-        keyid: "ControlSprite"
+        attributes: {
+            keyid: {
+                type: "ControlSprite",
+                optional: false
+            },
+            name: {
+                type: "String",
+                optional: false
+            },
+            test: {
+                type: "Collection",
+                collectiontype: "Trigger",
+                optional: false
+            },
+            type: {
+                type1: {
+                    sprite: {
+                        type: "Sprite",
+                        optional: true
+                    },
+                    condition: {
+                        type: "Condition",
+                        optional: true
+                    }
+
+                }
+            }
+        }
     },
     Trigger: {
         indexable: true,
@@ -254,10 +280,8 @@ var modelDescriptor = {
                 control: "Control"
             },
             enablecontrols: {
-                
             },
             disablecontrols: {
-                
             },
             playsound: {
                 sound: "SoundFileReference"

@@ -13,13 +13,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/data_test.js</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/index.html</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modelmanager.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modeldescriptor.js</file>
             <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/gamemanager.js</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/data.js</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/models/test_model.json</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/models/enreg.php</file>
+            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/data_to_transpose.js</file>
+            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modeldescriptor_v3.js</file>
         </group>
     </open-files>
 </project-private>
