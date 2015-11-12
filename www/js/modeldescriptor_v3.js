@@ -175,7 +175,6 @@ var modelDescriptorV3 = {
                 }
             }
         }
-
     }
 
 };
