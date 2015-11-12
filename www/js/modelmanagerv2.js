@@ -30,6 +30,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modelDescriptor) {
     this.getFlattened = function (conditionalAttributesValues) {
         
         var flattenedDescriptor = _.clone(objectDescriptor);
+        flattenedDescriptor.attributes = _.clone(flattenedDescriptor.attributes);
         
         for (var attributeId in attributes) {
             switch (attributes[attributeId].getType()) {
