@@ -134,12 +134,11 @@ var modelDescriptorV3 = {
                         operator: {
                             type: "ArithmeticOperator",
                             required: true
-                        }/*,
-                         variabletype: {
-                         type: "ConditionalAttributesSet",
-                         attributesSets: {
-                         }
-                         }$*/
+                        },
+                        variabletype: {
+                            type: "VariableValue",
+                            required: true
+                        }
                     },
                     othertemp: {
                     }
