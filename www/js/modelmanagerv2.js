@@ -8,9 +8,6 @@ var ModelDescriptor = function (modelDescriptor) {
         unitDescriptors[descId] = new ObjectModelDescriptor(modelDescriptor[descId], this);
     }
 
-    var cloneDesc = _.clone(unitDescriptors["Condition"].getRaw());
-    unitDescriptors["Condition"].getFlattened({type: "checkvariable"}, cloneDesc);
-
 
     this.getUnitDescriptor = function (id) {
         return unitDescriptors[id];
@@ -21,13 +18,21 @@ var ModelDescriptor = function (modelDescriptor) {
         var serializedModel = JSON.stringify(modelDescriptor);
         return JSON.parse(serializedModel);
     };
+
+    this.getFlattened = function (descriptorId) {
+        //return 
+    };
+
+    var flattenedCondition = this.getUnitDescriptor("Condition").flatten({type: "checkvariable", variabletype: "boolean"});
+    var flattenedVariable = this.getUnitDescriptor("Variable").flatten({type: "number"});
+
+    console.log("ok");
 };
 
 
 var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
 
-    var attributes = {};
-    var rawAttributes = {};
+    var self = this;
 
     this.getRaw = function () {
         return objectDescriptor;
@@ -60,32 +65,40 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         return attrType;
     }
 
-    this.getFlattened = function (conditionalAttributesValues, descriptorToFlatten) {
-        // flattened, doit être cloné avant l'appel de la fonction, sinon on
-        // remplace les attributs du descripteur !!!!
+    this.flatten = function (conditionalAttributesValues) {
+        var descriptorToFlatten = self.getClone();
+        flattenAction(conditionalAttributesValues, descriptorToFlatten);
+        return descriptorToFlatten;
+    };
 
-        //var flattenedDescriptor = _.clone(objectDescriptor);
-        descriptorToFlatten.attributes = _.clone(descriptorToFlatten.attributes);
+    function flattenAction(conditionalAttributesValues, descriptorToFlatten) {
 
-
-        for (var attributeId in rawAttributes) {
-            var currentAttribute = rawAttributes[attributeId];
+        for (var attributeId in descriptorToFlatten.attributes) {
+            var currentAttribute = descriptorToFlatten.attributes[attributeId];
 
             var attrType = getAttributeType(currentAttribute);
 
             if (attrType === "ConditionalAttributesSet") {
-                // dans ce cas on remplace l'attribut par le choix conditionnel
 
+                // dans ce cas on remplace l'attribut par le choix conditionnel
                 if (conditionalAttributesValues[attributeId]) {
                     // on peut choisir
                     var choiceValue = conditionalAttributesValues[attributeId];
 
                     if (currentAttribute.attributesSets[choiceValue]) {
 
-                        var choosenBranch = _.clone(currentAttribute.attributesSets[choiceValue]);
-                        descriptorToFlatten.attributes[attributeId] = choosenBranch;
+                        var choosenBranch = currentAttribute.attributesSets[choiceValue];
+
+                        // fusion de la branche choisie dans les attributs
+                        _.each(choosenBranch, function (targetAttribute, targetAttributeId) {
+                            descriptorToFlatten.attributes[targetAttributeId] = targetAttribute;
+                        });
+
+                        // et suppression du set
+                        delete descriptorToFlatten.attributes[attributeId];
 
                         // et ensuite un appel récursif pour traiter les ConditionalAttributSets imbriqués
+                        flattenAction(conditionalAttributesValues, descriptorToFlatten);
 
                     } else {
                         console.warn("ObjectModelDescriptor - Pas de branche possible dans le descripteur : " + attributeId);
@@ -97,40 +110,21 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
             } else if (attrType === "Collection") {
                 // cas non traité pour le moment, on considère qu'une collection utilise toujours des références
 
-            } else if (attrType !== "basic") {
+            } else if (attrType !== "basic" && attrType !== "reference" && attrType !== "Enumeration") {
                 // remplacement brut des données dans le descripteur
-                var targetDesc = modDescriptor.getUnitDescriptor(attrType).getRaw();
+                var targetDesc = modDescriptor.getUnitDescriptor(attrType).getClone();
 
-                alert("ok");
+                _.each(targetDesc, function (targetDescChild, targetDescChildId) {
+                    currentAttribute[targetDescChildId] = targetDescChild;
+                });
+
+                // appel recursif
+                flattenAction(conditionalAttributesValues, descriptorToFlatten);
             }
         }
-
-        //return flattended;
-    };
-
-    rawAttributes = this.getAttributes();
-
-    for (var attrKey in rawAttributes) {
-        attributes[attrKey] = new ObjectModelDescriptorAttribute(rawAttributes[attrKey]);
     }
-};
+    ;
 
-var ObjectModelDescriptorAttribute = function (objectDescriptorAttribute) {
-
-    this.getType = function () {
-        var type = objectDescriptorAttribute.type;
-
-        /*if (type === "ConditionalAttributesSet" || type === "Enumeration" || type === "Collection") {
-         return type;
-         }*/
-
-        if (type === "string" || type === "number" || type === "boolean") {
-            return "basic";
-        }
-
-        //console.error("ObjectModelDescriptorAttribute - Le type de l'attribut n'est pas valide : " + type);
-        return type;
-    };
 };
 
 var ModelManagerV2 = function () {
