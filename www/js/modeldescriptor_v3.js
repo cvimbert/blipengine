@@ -3,6 +3,7 @@ var modelDescriptorV3 = {
     //Objects
 
     FileReference: {
+        referenceable: false,
         attributes: {
             file: {
                 type: "string",
@@ -11,6 +12,7 @@ var modelDescriptorV3 = {
         }
     },
     Package: {
+        referenceable: true,
         attributes: {
             name: {
                 type: "string",
@@ -23,6 +25,7 @@ var modelDescriptorV3 = {
         }
     },
     SoundFileReference: {
+        referenceable: true,
         attributes: {
             file: {
                 type: "FileReference",
@@ -37,6 +40,7 @@ var modelDescriptorV3 = {
         }
     },
     SpriteFileReference: {
+        referenceable: true,
         attributes: {
             file: {
                 type: "FileReference",
@@ -51,6 +55,7 @@ var modelDescriptorV3 = {
         }
     },
     Sprite: {
+        referenceable: true,
         attributes: {
             name: {
                 type: "string",
@@ -72,6 +77,7 @@ var modelDescriptorV3 = {
         }
     },
     SpritesGroup: {
+        referenceable: true,
         attributes: {
             name: {
                 type: "string",
@@ -86,6 +92,7 @@ var modelDescriptorV3 = {
         }
     },
     Variable: {
+        referenceable: true,
         attributes: {
             name: {
                 type: "string",
@@ -117,6 +124,7 @@ var modelDescriptorV3 = {
         }
     },
     Condition: {
+        referenceable: true,
         attributes: {
             name: {
                 type: "string",
@@ -146,7 +154,7 @@ var modelDescriptorV3 = {
             }
         }
     },
-    // other
+    // à partir d'ici, ce ne sont plus des objets complets
 
     ArithmeticOperator: {
         type: "Enumeration",

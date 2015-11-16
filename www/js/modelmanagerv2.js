@@ -9,6 +9,11 @@ var ModelDescriptor = function (modelDescriptor) {
     }
 
 
+    this.getDescriptors = function () {
+        return unitDescriptors;
+    };
+
+
     this.getUnitDescriptor = function (id) {
         return unitDescriptors[id];
     };
@@ -131,7 +136,9 @@ var ModelManagerV2 = function () {
 
     var modelDescriptor = new ModelDescriptor(modelDescriptorV3);
 
-
+    this.getDescriptors = function() {
+        return modelDescriptor.getDescriptors();
+    };
 
 
     return this;
