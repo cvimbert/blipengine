@@ -1,15 +1,24 @@
-/*$(document).ready(function () {
- $(".btn-add").click(function () {
- $('#modal-basic').modal();
- });
- });*/
+/* global _, Widgets, angular, modelDescriptorV3 */
 
-/* global _, Widgets */
+angular.module("model-monitor", [])
+        .controller("model-monitor-controller", function ($scope) {
+            $scope.completeDescriptor = modelDescriptorV3;
+
+            $scope.addElement = function (descid) {
+                $scope.descid = descid;
+                $scope.descriptor = modelDescriptorV3[descid];
+                $("#modal-desc").modal();
+            };
+
+            $scope.renderCb = function () {
+                //$(".combobox").combobox();
+            };
+        });
 
 var ModelMonitor = function (modelManager) {
-    var rowTemplate = _.template($("#monitor-row-container-template").html());
+    //var rowTemplate = _.template($("#monitor-row-container-template").html());
 
-    var container = $("#monitor-container");
+    //var container = $("#monitor-container");
 
     this.display = function () {
         var descs = modelManager.getDescriptors();
@@ -45,6 +54,8 @@ var EditionModal = function (model, modelDescriptor, descId) {
     var containerTemplate = _.template('<div class="modal-attribute-container"></div>');
     var inputGroupTemplate = _.template('<div class="input-group monitor-modal-input-group"><span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon-<%= id %>"><%= id %></span></div>');
 
+
+
     this.clear = function () {
         title.html("");
         body.html("");
@@ -55,7 +66,8 @@ var EditionModal = function (model, modelDescriptor, descId) {
         self.populate();
 
         // ouverture
-        $("#modal-basic").modal();
+        $("#modal-basic-test").modal();
+
     };
 
     this.populate = function () {
@@ -76,29 +88,29 @@ var EditionModal = function (model, modelDescriptor, descId) {
 
             if (Widgets[attributeValue.type]) {
                 var widget = Widgets[attributeValue.type];
-                
+
                 if (widget.populate) {
                     _.bind(widget.populate, widget);
                 }
-                
+
                 widget.$el = inputGroup;
-                
+
                 var widgetTemplate = _.template(widget.template);
                 var widgetElem = $(widgetTemplate({value: "", id: attributeId}));
 
                 widgetElem.on("change", function () {
-                    
+
                 });
 
                 inputGroup.append(widgetElem);
-                
+
                 if (attributeValue.type === "ConditionalAttributesSet") {
                     var values = {};
-                    
+
                     for (var setName in attributeValue.attributesSets) {
                         values[setName] = setName;
                     }
-                    
+
                     widget.populate(values);
                 }
             }
@@ -147,5 +159,5 @@ $(document).ready(function () {
     var modelManager = new ModelManagerV2();
     var modelMonitor = new ModelMonitor(modelManager);
 
-    modelMonitor.display();
+    //modelMonitor.display();
 });
