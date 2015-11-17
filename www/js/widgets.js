@@ -1,32 +1,39 @@
+/* global _ */
+
 var Widgets = {
     string: {
         template: '<input type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon1" value="<%= value %>">',
-        render: function () {
+        populate: function ($el) {
             //alert (this.template);
         }
     },
     boolean: {
         template: "",
-        render: function () {
+        populate: function () {
             
         }
     },
     number: {
         template: "",
-        render: function () {
+        populate: function () {
             
         }
     },
     reference: {
         template: "",
-        render: function () {
+        populate: function () {
             
         }
     },
     ConditionalAttributesSet: {
-        template: '<select class="combobox"><option></option><option value="PA">Pennsylvania</option><option value="CT">Connecticut</option></select>',
-        render: function () {
-            $('.combobox').combobox();
+        template: '<select class="combobox"><option></option></select>',
+        optiontemplate: _.template('<option value="<%= ky %>"><%= ky %></option>'),
+        populate: function ($el, values) {
+            for (var key in values) {
+                $('.combobox', $el).append(this.optiontemplate({ky: key}));
+            }
+            
+            //$('.combobox', $el).combobox();
         }
     }
 };

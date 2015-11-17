@@ -76,17 +76,30 @@ var EditionModal = function (model, modelDescriptor, descId) {
 
             if (Widgets[attributeValue.type]) {
                 var widget = Widgets[attributeValue.type];
+                
+                if (widget.populate) {
+                    _.bind(widget.populate, widget);
+                }
+                
                 var widgetTemplate = _.template(widget.template);
                 var widgetElem = $(widgetTemplate({value: ""}));
-                
-                widgetElem.on("change", function() {
+
+                widgetElem.on("change", function () {
                     //alert ("ok");
                 });
-                
-                inputGroup.append(widgetElem);
-                widget.render();
-            }
 
+                inputGroup.append(widgetElem);
+                
+                if (attributeValue.type === "ConditionalAttributesSet") {
+                    var values = {};
+                    
+                    for (var setName in attributeValue.attributesSets) {
+                        values[setName] = setName;
+                    }
+                    
+                    widget.populate(inputGroup, values);
+                }
+            }
 
             body.append(cont);
             cont.html(inputGroup);
