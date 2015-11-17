@@ -43,7 +43,7 @@ var EditionModal = function (model, modelDescriptor, descId) {
     var body = $(".modal-body", modal);
 
     var containerTemplate = _.template('<div class="modal-attribute-container"></div>');
-    var inputGroupTemplate = _.template('<div class="input-group"><span class="input-group-addon" id="basic-addon-<%= id %>"><%= id %></span></div>');
+    var inputGroupTemplate = _.template('<div class="input-group monitor-modal-input-group"><span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon-<%= id %>"><%= id %></span></div>');
 
     this.clear = function () {
         title.html("");
@@ -81,11 +81,13 @@ var EditionModal = function (model, modelDescriptor, descId) {
                     _.bind(widget.populate, widget);
                 }
                 
+                widget.$el = inputGroup;
+                
                 var widgetTemplate = _.template(widget.template);
-                var widgetElem = $(widgetTemplate({value: ""}));
+                var widgetElem = $(widgetTemplate({value: "", id: attributeId}));
 
                 widgetElem.on("change", function () {
-                    //alert ("ok");
+                    
                 });
 
                 inputGroup.append(widgetElem);
@@ -97,7 +99,7 @@ var EditionModal = function (model, modelDescriptor, descId) {
                         values[setName] = setName;
                     }
                     
-                    widget.populate(inputGroup, values);
+                    widget.populate(values);
                 }
             }
 

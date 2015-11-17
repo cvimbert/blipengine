@@ -2,8 +2,8 @@
 
 var Widgets = {
     string: {
-        template: '<input type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon1" value="<%= value %>">',
-        populate: function ($el) {
+        template: '<input type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon-<%= id %>" value="<%= value %>">',
+        populate: function () {
             //alert (this.template);
         }
     },
@@ -14,7 +14,7 @@ var Widgets = {
         }
     },
     number: {
-        template: "",
+        template: '<input type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon-<%= id %>" value="<%= value %>">',
         populate: function () {
             
         }
@@ -28,12 +28,12 @@ var Widgets = {
     ConditionalAttributesSet: {
         template: '<select class="combobox"><option></option></select>',
         optiontemplate: _.template('<option value="<%= ky %>"><%= ky %></option>'),
-        populate: function ($el, values) {
+        populate: function (values) {
             for (var key in values) {
-                $('.combobox', $el).append(this.optiontemplate({ky: key}));
+                $('.combobox', this.$el).append(this.optiontemplate({ky: key}));
             }
             
-            //$('.combobox', $el).combobox();
+            $('.combobox', this.$el).combobox();
         }
     }
 };

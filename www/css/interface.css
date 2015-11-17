@@ -3,15 +3,6 @@
     Author     : Christophe
 */
 
-body {
-    
-}
-
-.row {
-    margin-right: 0;
-    margin-left: 0;
-}
-
 .btn-add {
     margin: 0 8px 0 8px;
     width: 23px;
@@ -32,8 +23,8 @@ body {
 .modal-attribute-container {
     padding-top: 4px;
     padding-bottom: 4px;
-    border-bottom: gray 1px dashed;
-    border-top: gray 1px dashed;
+    /* border-bottom: gray 1px dashed; */
+    /* border-top: gray 1px dashed; */
     margin-top: 4px;
 }
 
@@ -42,7 +33,7 @@ body {
 }
 
 .modal-attribute-container.out {
-    background-color: lavender;
+    /* background-color: lavender; */
 }
 
 .model-displayer-container {
@@ -56,4 +47,22 @@ body {
     border-width: 1px;
     height: 150px;
     padding: 5px;
+}
+
+.monitor-modal-input-group {
+
+}
+
+.monitor-modal-input-group-addon {
+    width: 100px;
+}
+
+.combobox-container input {
+    height: 33px;
+    width: 100%;
+    padding-left: 12px;
+}
+
+.modal-attribute-container .monitor-modal-input-group {
+    width: 100%;
 }
