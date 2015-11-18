@@ -3,16 +3,28 @@
 angular.module("model-monitor", [])
         .controller("model-monitor-controller", function ($scope) {
             $scope.completeDescriptor = modelDescriptorV3;
+    
+            //$scope.elementModel = 
 
             $scope.addElement = function (descid) {
                 $scope.descid = descid;
                 $scope.descriptor = modelDescriptorV3[descid];
                 $("#modal-desc").modal();
             };
-
-            $scope.renderCb = function () {
+            
+            $scope.renderCb = function (e) {
                 //$(".combobox").combobox();
             };
+            
+            $scope.attributeSetSelected = function () {
+                
+            };
+            
+            $scope.selectedSetValue = "";
+            
+            $scope.$watch("selectedSetValue", function(oldval, newval) {
+                alert (oldval);
+            });
         });
 
 var ModelMonitor = function (modelManager) {

@@ -51,7 +51,7 @@
 
                                     <input ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="67">
 
-                                    <select ng-if="attribute.type === 'ConditionalAttributesSet'" ng-init="renderCb()" class="combobox">
+                                    <select ng-if="attribute.type === 'ConditionalAttributesSet'" ng-model="selectedSetValue" ng-init="renderCb()" class="combobox">
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
                                     </select>
