@@ -23,7 +23,7 @@ angular.module("model-monitor", [])
             $scope.selectedSetValue = "";
             
             $scope.$watch("selectedSetValue", function(oldval, newval) {
-                alert (oldval);
+                
             });
         });
 

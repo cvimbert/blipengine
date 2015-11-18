@@ -75,6 +75,47 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         flattenAction(conditionalAttributesValues, descriptorToFlatten);
         return descriptorToFlatten;
     };
+    
+    
+    this.getObjectBySource = function (descriptorId, sourceObject) {
+        var destObject = {};
+        return self.getObject(modDescriptor.getUnitDescriptor(descriptorId).getRaw().attributes, sourceObject, destObject);
+    };
+    
+
+    this.getObject = function (descriptorAttributes, sourceObject, destObject) {
+
+        _.each(descriptorAttributes, function (attribute, attributeId) {
+            if (!sourceObject || !sourceObject[attributeId]) {
+                switch (attribute.type) {
+                    case "string":
+                        destObject[attributeId] = "";
+                        break;
+
+                    case "number":
+                        destObject[attributeId] = 0;
+                        break;
+
+                    case "boolean":
+                        destObject[attributeId] = false;
+                        break;
+
+                    case "ConditionalAttributesSet":
+                        destObject[attributeId] = "";
+                        break;
+
+                    default:
+                        destObject[attributeId] = "";
+                }
+            } else {
+                if (attribute.type === "ConditionalAttributesSet") {
+                    self.getObject(attribute.attributesSets[sourceObject[attributeId]], sourceObject, destObject);
+                } else {
+                    destObject[attributeId] = sourceObject[attributeId];
+                }
+            }
+        });
+    };
 
     function flattenAction(conditionalAttributesValues, descriptorToFlatten) {
 
@@ -136,7 +177,7 @@ var ModelManagerV2 = function () {
 
     var modelDescriptor = new ModelDescriptor(modelDescriptorV3);
 
-    this.getDescriptors = function() {
+    this.getDescriptors = function () {
         return modelDescriptor.getDescriptors();
     };
 
