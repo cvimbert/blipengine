@@ -3,13 +3,16 @@
 angular.module("model-monitor", [])
         .controller("model-monitor-controller", function ($scope) {
             $scope.completeDescriptor = modelDescriptorV3;
-    
-            //$scope.elementModel = 
 
             $scope.addElement = function (descid) {
                 $scope.descid = descid;
-                $scope.descriptor = modelDescriptorV3[descid];
+                $scope.item = modelManager.getUnitDescriptor(descid).getObjectBySource(descid, null);
+                $scope.descriptor = modelManager.getUnitDescriptor(descid).flattenByItem($scope.item);
                 $("#modal-desc").modal();
+            };
+            
+            $scope.editElement = function () {
+                
             };
             
             $scope.renderCb = function (e) {
@@ -17,14 +20,13 @@ angular.module("model-monitor", [])
             };
             
             $scope.attributeSetSelected = function () {
-                
+                $scope.item = modelManager.getUnitDescriptor($scope.descid).getObjectBySource($scope.descid, $scope.item);
+                $scope.descriptor = modelManager.getUnitDescriptor($scope.descid).flattenByItem($scope.item);
             };
             
-            $scope.selectedSetValue = "";
-            
-            $scope.$watch("selectedSetValue", function(oldval, newval) {
+            $scope.validate = function () {
                 
-            });
+            };
         });
 
 var ModelMonitor = function (modelManager) {
@@ -167,9 +169,12 @@ var UnitModelMonitor = function (id, descriptor) {
     }
 };
 
+var modelManager;
+var modelMonitor;
+
 $(document).ready(function () {
-    var modelManager = new ModelManagerV2();
-    var modelMonitor = new ModelMonitor(modelManager);
+    modelManager = new ModelManagerV2();
+    modelMonitor = new ModelMonitor(modelManager);
 
     //modelMonitor.display();
 });

@@ -41,17 +41,17 @@
                         </div>
                         <div class="modal-body">
 
-                            <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor.attributes">
+                            <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor">
                                 <div class="input-group monitor-modal-input-group">
                                     <span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon">
                                         {{attributeid}}
                                     </span>
 
-                                    <input ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="yop">
+                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
 
-                                    <input ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="67">
+                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
 
-                                    <select ng-if="attribute.type === 'ConditionalAttributesSet'" ng-model="selectedSetValue" ng-init="renderCb()" class="combobox">
+                                    <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" ng-init="renderCb()" class="combobox">
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
                                     </select>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                            <button type="button" class="btn btn-primary">OK</button>
+                            <button ng-click="validate()" type="button" class="btn btn-primary">OK</button>
                         </div>
                     </div>
                 </div>

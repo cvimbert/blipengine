@@ -27,11 +27,6 @@ var ModelDescriptor = function (modelDescriptor) {
     this.getFlattened = function (descriptorId) {
         //return 
     };
-
-    var flattenedCondition = this.getUnitDescriptor("Condition").flatten({type: "checkvariable", variabletype: "boolean"});
-    var flattenedVariable = this.getUnitDescriptor("Variable").flatten({type: "number"});
-
-    console.log("ok");
 };
 
 
@@ -55,6 +50,11 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         var serializedDescriptor = JSON.stringify(objectDescriptor);
         return JSON.parse(serializedDescriptor);
     };
+    
+    function clone(object) {
+        var ser = JSON.stringify(object);
+        return JSON.parse(ser);
+    }
 
     function getAttributeType(attribute) {
         var attrType = attribute.type;
@@ -70,18 +70,13 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         return attrType;
     }
 
-    this.flatten = function (conditionalAttributesValues) {
-        var descriptorToFlatten = self.getClone();
-        flattenAction(conditionalAttributesValues, descriptorToFlatten);
-        return descriptorToFlatten;
-    };
-    
-    
+
     this.getObjectBySource = function (descriptorId, sourceObject) {
         var destObject = {};
-        return self.getObject(modDescriptor.getUnitDescriptor(descriptorId).getRaw().attributes, sourceObject, destObject);
+        self.getObject(modDescriptor.getUnitDescriptor(descriptorId).getRaw().attributes, sourceObject, destObject);
+        return destObject;
     };
-    
+
 
     this.getObject = function (descriptorAttributes, sourceObject, destObject) {
 
@@ -89,11 +84,11 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
             if (!sourceObject || !sourceObject[attributeId]) {
                 switch (attribute.type) {
                     case "string":
-                        destObject[attributeId] = "";
+                        destObject[attributeId] = "test";
                         break;
 
                     case "number":
-                        destObject[attributeId] = 0;
+                        destObject[attributeId] = 4;
                         break;
 
                     case "boolean":
@@ -109,6 +104,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
                 }
             } else {
                 if (attribute.type === "ConditionalAttributesSet") {
+                    destObject[attributeId] = sourceObject[attributeId];
                     self.getObject(attribute.attributesSets[sourceObject[attributeId]], sourceObject, destObject);
                 } else {
                     destObject[attributeId] = sourceObject[attributeId];
@@ -116,6 +112,35 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
             }
         });
     };
+    
+    
+    this.flattenByItem = function(item) {
+        var destDesc = {};
+        flattenByItemAction(item, objectDescriptor.attributes, destDesc);
+        return destDesc;
+    };
+    
+    
+    function flattenByItemAction(item, attributes, destDesc) {
+        
+        _.each(attributes, function(attribute, attributeId) {
+            
+            destDesc[attributeId] = attribute;
+            
+            if (attribute.type === "ConditionalAttributesSet") {
+                var selectedBranch = attribute.attributesSets[item[attributeId]];
+                flattenByItemAction(item, selectedBranch, destDesc);
+            }
+        });
+    }
+    
+
+    this.flatten = function (conditionalAttributesValues) {
+        var descriptorToFlatten = self.getClone();
+        flattenAction(conditionalAttributesValues, descriptorToFlatten);
+        return descriptorToFlatten;
+    };
+    
 
     function flattenAction(conditionalAttributesValues, descriptorToFlatten) {
 
@@ -181,6 +206,9 @@ var ModelManagerV2 = function () {
         return modelDescriptor.getDescriptors();
     };
 
+    this.getUnitDescriptor = function (id) {
+        return modelDescriptor.getDescriptors()[id];
+    };
 
     return this;
 };
