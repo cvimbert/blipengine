@@ -43,7 +43,7 @@
     border-radius: 6px;
     border-style: dashed;
     border-width: 1px;
-    height: 150px;
+    /* height: 150px; */
     padding: 5px;
     background-color: white;
 }
@@ -88,4 +88,23 @@
 
 .footer {
     text-align: right;
+}
+
+.item-displayer-container {
+    height: 250px;
+    padding: 10px;
+    background-color: #eee;
+    overflow-y: scroll;
+    text-align: center;
+    margin: 5px 0 5px 0;
+}
+
+.item-displayer {
+    width: 96%;
+    height: 30px;
+    background-color: red;
+    margin-bottom: 6px;
+    line-height: 30px;
+    font-size: 13px;
+    cursor: pointer;
 }

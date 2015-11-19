@@ -1,4 +1,4 @@
-/* global modelDescriptorV3, _ */
+/* global modelDescriptorV3, _, uuid */
 
 var ModelDescriptor = function (modelDescriptor) {
 
@@ -75,15 +75,20 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
     }
 
 
-    this.getObjectBySource = function (descriptorId, sourceObject) {
+    this.getObjectBySource = function (sourceObject) {
         var destObject = {};
-        self.getObject(modDescriptor.getUnitDescriptor(descriptorId).getRaw().attributes, sourceObject, destObject);
+
+        if (!destObject.uid) {
+            destObject.uid = uuid.v4();
+        }
+
+        var fdesc = self.flattenByItem(sourceObject);
+        self.getObject(fdesc, sourceObject, destObject);
         return destObject;
     };
 
 
     this.getObject = function (descriptorAttributes, sourceObject, destObject) {
-
         _.each(descriptorAttributes, function (attribute, attributeId) {
             if (!sourceObject || !sourceObject[attributeId]) {
                 switch (attribute.type) {
@@ -131,13 +136,17 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
 
 
     this.flattenAttribute = function (item, attribute, attributeId, destDesc, indentation) {
+
         destDesc[attributeId] = attribute;
         destDesc[attributeId].indentation = indentation;
 
         if (attribute.type === "ConditionalAttributesSet") {
 
-            var selectedBranch = attribute.attributesSets[item[attributeId]];
-            flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
+            if (item && item[attributeId]) {
+                var selectedBranch = attribute.attributesSets[item[attributeId]];
+                flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
+            }
+
 
         } else if (attribute.type === "include") {
 
@@ -222,6 +231,13 @@ var ModelManagerV2 = function () {
 
     var model = {};
 
+    //delete localStorage["model"];
+
+    if (localStorage["model"]) {
+        model = JSON.parse(localStorage["model"]);
+    }
+
+
     var modelDescriptor = new ModelDescriptor(modelDescriptorV3);
 
     this.getDescriptors = function () {
@@ -234,8 +250,28 @@ var ModelManagerV2 = function () {
 
     this.saveObject = function (objectType, object) {
         if (!model[objectType]) {
-            model[objectType] = {};
+            model[objectType] = [];
         }
+
+        model[objectType].push(object);
+    };
+
+    this.saveToStorage = function () {
+        localStorage["model"] = JSON.stringify(model);
+    };
+
+    this.deleteLocalStorage = function () {
+        delete localStorage["model"];
+    };
+
+    this.getModel = function () {
+        return model;
+    };
+    
+    this.clearModel = function () {
+        _.each(model, function(modelContent, modelType) {
+            delete model[modelType];
+        });
     };
 
     return this;
