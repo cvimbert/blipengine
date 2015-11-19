@@ -42,7 +42,7 @@
                         <div class="modal-body">
 
                             <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor">
-                                <div class="input-group monitor-modal-input-group">
+                                <div class="input-group monitor-modal-input-group indented-{{attribute.indentation}}">
                                     <span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon">
                                         {{attributeid}}
                                     </span>
@@ -51,6 +51,11 @@
 
                                     <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
 
+                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" ng-init="renderCb()" class="combobox">
+                                        <option value="false">false</option>
+                                        <option value="true">true</option>
+                                    </select>
+                                    
                                     <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" ng-init="renderCb()" class="combobox">
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 

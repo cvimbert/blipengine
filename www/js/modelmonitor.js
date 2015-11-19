@@ -16,12 +16,15 @@ angular.module("model-monitor", [])
             };
             
             $scope.renderCb = function (e) {
-                //$(".combobox").combobox();
+                /*setTimeout(function() {
+                    $(".combobox").combobox();
+                }, 300);*/
             };
             
             $scope.attributeSetSelected = function () {
                 $scope.item = modelManager.getUnitDescriptor($scope.descid).getObjectBySource($scope.descid, $scope.item);
                 $scope.descriptor = modelManager.getUnitDescriptor($scope.descid).flattenByItem($scope.item);
+                console.log("yes");
             };
             
             $scope.validate = function () {

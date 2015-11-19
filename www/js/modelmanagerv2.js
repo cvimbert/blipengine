@@ -66,8 +66,12 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         if (attribute.usereference === true) {
             return "reference";
         }
+        
+        if (attrType === "collection") {
+            return "collection";
+        }
 
-        return attrType;
+        return "injection";
     }
 
 
@@ -92,7 +96,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
                         break;
 
                     case "boolean":
-                        destObject[attributeId] = false;
+                        destObject[attributeId] = "false";
                         break;
 
                     case "ConditionalAttributesSet":
@@ -116,20 +120,27 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
     
     this.flattenByItem = function(item) {
         var destDesc = {};
-        flattenByItemAction(item, objectDescriptor.attributes, destDesc);
+        flattenByItemAction(item, objectDescriptor.attributes, destDesc, 0);
         return destDesc;
     };
     
     
-    function flattenByItemAction(item, attributes, destDesc) {
+    function flattenByItemAction(item, attributes, destDesc, indentation) {
         
         _.each(attributes, function(attribute, attributeId) {
             
             destDesc[attributeId] = attribute;
+            destDesc[attributeId].indentation = indentation;
             
             if (attribute.type === "ConditionalAttributesSet") {
                 var selectedBranch = attribute.attributesSets[item[attributeId]];
-                flattenByItemAction(item, selectedBranch, destDesc);
+                flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
+            } else if (getAttributeType(attribute) === "injection") {
+                var targetDescriptor = modDescriptor.getUnitDescriptor(attribute.type);
+                
+                _.each(targetDescriptor.attributes, function(tAttribute, tAttributeId) {
+                    
+                });
             }
         });
     }
