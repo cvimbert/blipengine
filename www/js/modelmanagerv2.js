@@ -50,7 +50,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         var serializedDescriptor = JSON.stringify(objectDescriptor);
         return JSON.parse(serializedDescriptor);
     };
-    
+
     function clone(object) {
         var ser = JSON.stringify(object);
         return JSON.parse(ser);
@@ -66,7 +66,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
         if (attribute.usereference === true) {
             return "reference";
         }
-        
+
         if (attrType === "collection") {
             return "collection";
         }
@@ -116,42 +116,51 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
             }
         });
     };
-    
-    
-    this.flattenByItem = function(item) {
+
+
+    this.flattenByItem = function (item) {
         var destDesc = {};
-        flattenByItemAction(item, objectDescriptor.attributes, destDesc, 0);
+        self.flattenByDescItem(item, objectDescriptor, destDesc, 0);
         return destDesc;
     };
-    
-    
+
+
+    this.flattenByDescItem = function (item, desc, destDesc, indentation) {
+        flattenByItemAction(item, desc.attributes, destDesc, indentation);
+    };
+
+
+    this.flattenAttribute = function (item, attribute, attributeId, destDesc, indentation) {
+        destDesc[attributeId] = attribute;
+        destDesc[attributeId].indentation = indentation;
+
+        if (attribute.type === "ConditionalAttributesSet") {
+
+            var selectedBranch = attribute.attributesSets[item[attributeId]];
+            flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
+
+        } else if (attribute.type === "include") {
+
+            var targetDescriptor = modDescriptor.getUnitDescriptor(attribute.includetype).getRaw();
+            self.flattenAttribute(item, targetDescriptor, attributeId, destDesc, indentation);
+        }
+    };
+
+
     function flattenByItemAction(item, attributes, destDesc, indentation) {
-        
-        _.each(attributes, function(attribute, attributeId) {
-            
-            destDesc[attributeId] = attribute;
-            destDesc[attributeId].indentation = indentation;
-            
-            if (attribute.type === "ConditionalAttributesSet") {
-                var selectedBranch = attribute.attributesSets[item[attributeId]];
-                flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
-            } else if (getAttributeType(attribute) === "injection") {
-                var targetDescriptor = modDescriptor.getUnitDescriptor(attribute.type);
-                
-                _.each(targetDescriptor.attributes, function(tAttribute, tAttributeId) {
-                    
-                });
-            }
+
+        _.each(attributes, function (attribute, attributeId) {
+            self.flattenAttribute(item, attribute, attributeId, destDesc, indentation);
         });
     }
-    
+
 
     this.flatten = function (conditionalAttributesValues) {
         var descriptorToFlatten = self.getClone();
         flattenAction(conditionalAttributesValues, descriptorToFlatten);
         return descriptorToFlatten;
     };
-    
+
 
     function flattenAction(conditionalAttributesValues, descriptorToFlatten) {
 
@@ -211,6 +220,8 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
 
 var ModelManagerV2 = function () {
 
+    var model = {};
+
     var modelDescriptor = new ModelDescriptor(modelDescriptorV3);
 
     this.getDescriptors = function () {
@@ -219,6 +230,12 @@ var ModelManagerV2 = function () {
 
     this.getUnitDescriptor = function (id) {
         return modelDescriptor.getDescriptors()[id];
+    };
+
+    this.saveObject = function (objectType, object) {
+        if (!model[objectType]) {
+            model[objectType] = {};
+        }
     };
 
     return this;

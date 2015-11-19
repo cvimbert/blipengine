@@ -51,12 +51,12 @@
 
                                     <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
 
-                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" ng-init="renderCb()" class="combobox">
+                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" class="combobox">
                                         <option value="false">false</option>
                                         <option value="true">true</option>
                                     </select>
                                     
-                                    <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" ng-init="renderCb()" class="combobox">
+                                    <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" class="combobox">
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
                                     </select>
@@ -70,6 +70,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="footer">
+                <button ng-click="save()" type="button" class="btn btn-primary">Sauvegarder</button>
+                <button ng-click="deleteModel()" type="button" class="btn btn-danger">Effacer le modèle</button>
             </div>
         </div>
     </body>

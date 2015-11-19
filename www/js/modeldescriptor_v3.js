@@ -140,11 +140,13 @@ var modelDescriptorV3 = {
                             required: true
                         },
                         operator: {
-                            type: "ArithmeticOperator",
+                            type: "include",
+                            includetype: "ArithmeticOperator",
                             required: true
                         },
                         variabletype: {
-                            type: "VariableValue",
+                            type: "include",
+                            includetype: "VariableValue",
                             required: true
                         }
                     },
