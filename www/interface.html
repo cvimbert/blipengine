@@ -18,8 +18,8 @@
         <script src="js/modeldescriptor_v3.js" type="text/javascript"></script>
         <script src="js/modelmanagerv2.js" type="text/javascript"></script>
     </head>
-    
-    <body ng-app="model-monitor" ng-controller="model-monitor-controller">
+
+    <body ng-app="model-monitor" ng-controller="modelmonitorcontroller">
         <div class="container-fluid">
 
             <div id="monitor-container">
@@ -29,7 +29,10 @@
                             <span class="title">Créer {{descid}}</span>
                             <button ng-click="addElement(descid)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
                             <div class="item-displayer-container">
-                                <div ng-click="editElement(descid, item)" ng-repeat="item in completeModel[descid]" class="item-displayer">{{getName(item)}}</div>
+                                <div ng-click="editElement(descid, item)" ng-repeat="item in completeModel[descid]" class="item-displayer">
+                                    {{getName(item)}}
+                                    <div ng-click="deleteItem(descid, item, $event)" class="item-delete-button">x</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,22 +62,39 @@
                                         <option value="false">false</option>
                                         <option value="true">true</option>
                                     </select>
-                                    
+
                                     <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" class="combobox">
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
                                     </select>
-                                    
+
                                     <select ng-model="item[attributeid]" ng-if="attribute.type === 'Enumeration'" class="combobox">
                                         <option></option>
                                         <option ng-repeat="val in attribute.enumerationvalues" value="{{val}}">{{val}}</option>
                                     </select>
-                                    
-                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'reference'" class="combobox">
-                                        <option></option>
-                                        <option ng-repeat="(refid, ref) in getReferences(attribute.referencetype)" value="{{refid}}">{{getName(ref)}}</option>
-                                    </select>
-                                    
+
+                                    <div ng-if="attribute.type === 'reference'">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <select ng-model="item[attributeid]" class="combobox">
+                                                        <option></option>
+                                                        <option ng-repeat="(refid, ref) in getReferences(attribute.referencetype)" value="{{refid}}">{{getName(ref)}}</option>
+                                                    </select>
+                                                </td>
+                                                <td class="button-td">
+                                                    <button class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                                                </td>
+                                                <td class="button-td">
+                                                    <button class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        
+                                        
+                                    </div>    
+
                                 </div>
                             </div>
 

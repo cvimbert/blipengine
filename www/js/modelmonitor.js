@@ -1,7 +1,7 @@
 /* global _, Widgets, angular, modelDescriptorV3 */
 
 angular.module("model-monitor", [])
-        .controller("model-monitor-controller", function ($scope) {
+        .controller("modelmonitorcontroller", function ($scope) {
             var modelManager = new ModelManagerV2();
     
             $scope.completeDescriptor = modelDescriptorV3;
@@ -26,6 +26,7 @@ angular.module("model-monitor", [])
                 $scope.descid = descid;
                 $scope.item = item;
                 $scope.descriptor = modelManager.getUnitDescriptor(descid).flattenByItem(item);
+                console.log("edititem");
                 $("#modal-desc").modal();
             };
 
@@ -49,5 +50,11 @@ angular.module("model-monitor", [])
             $scope.deleteModel = function () {
                 modelManager.clearModel();
                 modelManager.deleteLocalStorage();
+            };
+            
+            $scope.deleteItem = function (descid, item, $event) {
+                console.log ("delitem");
+                $event.stopPropagation();
+                modelManager.deleteItem(descid, item);
             };
         });

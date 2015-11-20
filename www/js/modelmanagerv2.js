@@ -272,6 +272,10 @@ var ModelManagerV2 = function () {
         return model[descid];
     };
     
+    this.deleteItem = function (descid, item) {
+        delete model[descid][item.uid];
+    };
+    
     this.clearModel = function () {
         _.each(model, function(modelContent, modelType) {
             delete model[modelType];
