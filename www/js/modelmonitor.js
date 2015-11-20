@@ -32,7 +32,10 @@ angular.module("model-monitor", [])
             $scope.attributeSetSelected = function () {
                 $scope.item = modelManager.getUnitDescriptor($scope.descid).getObjectBySource($scope.item);
                 $scope.descriptor = modelManager.getUnitDescriptor($scope.descid).flattenByItem($scope.item);
-                console.log("ok");
+            };
+            
+            $scope.getReferences = function (targetDescid) {
+                return modelManager.getModelById(targetDescid);
             };
 
             $scope.validate = function () {

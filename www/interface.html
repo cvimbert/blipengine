@@ -64,6 +64,17 @@
                                         <option></option>
                                         <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
                                     </select>
+                                    
+                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'Enumeration'" class="combobox">
+                                        <option></option>
+                                        <option ng-repeat="val in attribute.enumerationvalues" value="{{val}}">{{val}}</option>
+                                    </select>
+                                    
+                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'reference'" class="combobox">
+                                        <option></option>
+                                        <option ng-repeat="(refid, ref) in getReferences(attribute.referencetype)" value="{{refid}}">{{getName(ref)}}</option>
+                                    </select>
+                                    
                                 </div>
                             </div>
 

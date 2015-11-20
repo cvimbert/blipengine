@@ -3,8 +3,12 @@ var modelDescriptorV3 = {
     //Objects
 
     FileReference: {
-        referenceable: false,
+        referenceable: true,
         attributes: {
+            name: {
+                type: "string",
+                required: true
+            },
             file: {
                 type: "string",
                 required: true
@@ -28,13 +32,13 @@ var modelDescriptorV3 = {
         referenceable: true,
         attributes: {
             file: {
-                type: "FileReference",
-                usereference: true,
+                type: "reference",
+                referencetype: "FileReference",
                 required: true
             },
             package: {
-                type: "Package",
-                usereference: true,
+                type: "reference",
+                referencetype: "Package",
                 required: true
             }
         }
@@ -42,14 +46,18 @@ var modelDescriptorV3 = {
     SpriteFileReference: {
         referenceable: true,
         attributes: {
+            name: {
+                type: "string",
+                required: true
+            },
             file: {
-                type: "FileReference",
-                usereference: true,
+                type: "reference",
+                referencetype: "FileReference",
                 required: true
             },
             package: {
-                type: "Package",
-                usereference: true,
+                type: "reference",
+                referencetype: "Package",
                 required: true
             }
         }
@@ -62,8 +70,8 @@ var modelDescriptorV3 = {
                 required: true
             },
             reference: {
-                type: "SpriteFileReference",
-                usereference: true,
+                type: "reference",
+                referencetype: "SpriteFileReference",
                 required: true
             },
             x: {
@@ -84,9 +92,9 @@ var modelDescriptorV3 = {
                 required: true
             },
             sprites: {
-                type: "Collection",
-                collectiontype: "Sprite",
-                usereference: true,
+                type: "collection",
+                collectiontype: "reference",
+                referencetype: "Sprite",
                 required: true
             }
         }
@@ -135,8 +143,8 @@ var modelDescriptorV3 = {
                 attributesSets: {
                     checkvariable: {
                         variable: {
-                            type: "Variable",
-                            usereference: true,
+                            type: "reference",
+                            referencetype: "Variable",
                             required: true
                         },
                         operator: {

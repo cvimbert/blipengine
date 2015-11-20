@@ -250,10 +250,10 @@ var ModelManagerV2 = function () {
 
     this.saveObject = function (objectType, object) {
         if (!model[objectType]) {
-            model[objectType] = [];
+            model[objectType] = {};
         }
 
-        model[objectType].push(object);
+        model[objectType][object.uid] = object;
     };
 
     this.saveToStorage = function () {
@@ -266,6 +266,10 @@ var ModelManagerV2 = function () {
 
     this.getModel = function () {
         return model;
+    };
+    
+    this.getModelById = function (descid) {
+        return model[descid];
     };
     
     this.clearModel = function () {
