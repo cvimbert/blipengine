@@ -5,18 +5,19 @@
             <url>public_html/js/gamemanager.js</url>
             <bookmark id="1">
                 <name/>
-                <line>833</line>
+                <line>832</line>
                 <key/>
             </bookmark>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/css/interface.css</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/interface.html</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modeldescriptor_v3.js</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modelmonitor.js</file>
-            <file>file:/C:/Users/Christophe/Documents/NetBeansProjects/LDCGame/www/js/modelmanagerv2.js</file>
+            <file>file:/C:/Projets/blipengine/www/interface.html</file>
+            <file>file:/C:/Projets/blipengine/www/js/modeldescriptor_v3.js</file>
+            <file>file:/C:/Projets/blipengine/www/js/modelmonitor.js</file>
+            <file>file:/C:/Projets/blipengine/www/js/widgets.js</file>
+            <file>file:/C:/Projets/blipengine/www/js/modelmanagerv2.js</file>
+            <file>file:/C:/Projets/blipengine/www/css/interface.css</file>
         </group>
     </open-files>
 </project-private>

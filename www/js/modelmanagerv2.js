@@ -77,7 +77,18 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
 
     this.getObjectBySource = function (sourceObject) {
         var destObject = {};
+        
+        if (sourceObject && sourceObject.uid) {
+            destObject.uid = sourceObject.uid;
+        }
+        
+        if (sourceObject && sourceObject.type) {
+            destObject.type = sourceObject.type;
+        }
 
+        var fdesc = self.flattenByItem(sourceObject);
+        self.getObject(fdesc, sourceObject, destObject);
+        
         if (!destObject.uid) {
             destObject.uid = uuid.v4();
         }
@@ -85,9 +96,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
         if (!destObject.type) {
             destObject.type = descid;
         }
-
-        var fdesc = self.flattenByItem(sourceObject);
-        self.getObject(fdesc, sourceObject, destObject);
+        
         return destObject;
     };
 

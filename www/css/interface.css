@@ -30,6 +30,14 @@
     margin: 0 5px 0 5px;
 }
 
+#modal-desc .items-stack .final-stack-item:after {
+    content: "";
+}
+
+#modal-desc .items-stack .final-stack-item {
+    font-weight: bold;
+}
+
 .modal-attribute-container {
     padding-top: 4px;
     padding-bottom: 4px;
@@ -49,7 +57,7 @@
     margin-right: 0px;
     height: 33px;
     width: 33px;
-    font-size: 27px;
+    font-size: 17px;
     line-height: 26px;
     /* color: #f00; */
     /* vertical-align: middle; */
@@ -132,30 +140,36 @@
     height: 250px;
     padding: 10px;
     background-color: #eee;
-    overflow-y: scroll;
     text-align: center;
     margin: 5px 0 5px 0;
+    overflow-y: auto;
+    border-radius: 5px;
 }
 
 .item-displayer {
-    width: 96%;
+    /* width: 96%; */
     height: 30px;
-    background-color: red;
+    background-color: #AFAFAF;
     margin-bottom: 6px;
     line-height: 30px;
     font-size: 13px;
     cursor: pointer;
     vertical-align: middle;
+    border-radius: 5px;
+    /* margin-right: 0; */
 }
 
 .item-delete-button {
     float: right;
     border-width: 1px;
-    background-color: white;
+    background-color: #F3F3F3;
     width: 18px;
     height: 18px;
-    line-height: 18px;
+    line-height: 20px;
     border-radius: 9px;
     margin-top: 5px;
     margin-right: 5px;
+    font-size: 12px;
+    text-align: center;
+    color: #6B6B6B;
 }       

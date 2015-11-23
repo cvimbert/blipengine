@@ -31,6 +31,10 @@ var modelDescriptorV3 = {
     SoundFileReference: {
         referenceable: true,
         attributes: {
+            name: {
+                type: "string",
+                required: true
+            },
             file: {
                 type: "reference",
                 referencetype: "FileReference",
