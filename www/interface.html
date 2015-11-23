@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js/underscore.js" type="text/javascript"></script>
         <script src="js/jquery-1.11.2.js" type="text/javascript"></script>
+        <script src="js/localisation.js" type="text/javascript"></script>
         <script src="js/widgets.js" type="text/javascript"></script>
         <link href="js/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="css/interface.css" rel="stylesheet" type="text/css"/>
@@ -26,7 +27,7 @@
                 <div class="row">
                     <div ng-repeat="(descid, desc) in completeDescriptor" ng-if="desc.referenceable" class="model-displayer-container col-md-3">
                         <div id="model-displayer-{{descid}}" class="model-displayer">
-                            <span class="title">Créer {{descid}}</span>
+                            <span class="title">{{getLocString(descid)}}</span>
                             <button ng-click="addItem(descid, null)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
                             <div class="item-displayer-container">
                                 <div ng-click="editItem(item.uid)" ng-repeat="item in completeModel[descid]" class="item-displayer">
@@ -44,29 +45,29 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" ng-click="closeEditionModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">{{descid}}</h4>
-                            <div class="items-stack"><span ng-repeat="stackitem in backItemsStack" ng-class="{'final-stack-item': $index === backItemsStack.length - 1}">{{getName(stackitem)}}</span></div>
+                            <h4 class="modal-title">{{getLocString(descid)}}</h4>
+                            <div class="items-stack"><span ng-repeat="stackitem in backItemsStack" ng-class="{'final-stack-item': $index === backItemsStack.length - 1}">{{getLocString(stackitem.type) + ": " + getName(stackitem, "")}}</span></div>
                         </div>
                         <div class="modal-body">
 
                             <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor">
                                 <div class="input-group monitor-modal-input-group indented-{{attribute.indentation}}">
                                     <span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon">
-                                        {{attributeid}}
+                                        {{getLocString(attributeid)}}
                                     </span>
 
-                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
+                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="{{getLocString(attribute.defaultvalue)}}" aria-describedby="basic-addon" value="">
 
                                     <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
 
                                     <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" class="combobox">
-                                        <option value="false">false</option>
-                                        <option value="true">true</option>
+                                        <option value="false">{{getLocString("false")}}</option>
+                                        <option value="true">{{getLocString("true")}}</option>
                                     </select>
 
                                     <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" class="combobox">
                                         <option></option>
-                                        <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{setid}}</option> 
+                                        <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{getLocString(setid)}}</option> 
                                     </select>
 
                                     <select ng-model="item[attributeid]" ng-if="attribute.type === 'Enumeration'" class="combobox">
@@ -78,12 +79,12 @@
                                         <table>
                                             <tr>
                                                 <td>
-                                                    <select class="combobox">
-                                                        <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" value="{{refid}}">{{getName(ref)}}</option>
+                                                    <select ng-model="collectionid" class="combobox">
+                                                        <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" ng-if="item[attributeid].lastIndexOf(refid) === -1" value="{{refid}}">{{getName(ref)}}</option>
                                                     </select>
                                                 </td>
                                                 <td class="button-td">
-                                                    <button class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
+                                                    <button class="btn-add btn btn-default" ng-click="addItemToCollection(collectionid, item[attributeid])" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
                                                 </td>
                                                 <td class="button-td">
                                                     <button class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
@@ -109,9 +110,18 @@
                                                 </td>
                                             </tr>
                                         </table>
+
                                     </div>    
 
                                 </div>
+
+                                <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && item[attributeid].length > 0">
+                                    <div class="collection-item-displayer" ng-repeat="ref in item[attributeid]">
+                                        {{getNameByUid(ref)}}
+                                        <div ng-click="deleteItemFromCollection($index, item[attributeid])" class="item-delete-button"><span class="glyphicon glyphicon-remove"></span></div>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>

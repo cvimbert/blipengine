@@ -106,19 +106,31 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
             if (!sourceObject || !sourceObject[attributeId]) {
                 switch (attribute.type) {
                     case "string":
-                        destObject[attributeId] = "test";
+                        destObject[attributeId] = "";
                         break;
 
                     case "number":
-                        destObject[attributeId] = 4;
+                        if (attribute.defaultvalue) {
+                            destObject[attributeId] = attribute.defaultvalue;
+                        } else {
+                            destObject[attributeId] = 0;
+                        }
                         break;
 
                     case "boolean":
-                        destObject[attributeId] = "false";
+                        if (attribute.defaultvalue) {
+                            destObject[attributeId] = attribute.defaultvalue;
+                        } else {
+                            destObject[attributeId] = "false";
+                        }
                         break;
 
                     case "ConditionalAttributesSet":
                         destObject[attributeId] = "";
+                        break;
+                        
+                    case "collection":
+                        destObject[attributeId] = [];
                         break;
 
                     default:

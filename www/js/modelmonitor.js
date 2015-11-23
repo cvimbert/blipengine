@@ -1,13 +1,30 @@
-/* global _, Widgets, angular, modelDescriptorV3 */
+/* global _, Widgets, angular, modelDescriptorV3, Localization */
 
 angular.module("model-monitor", [])
         .controller("modelmonitorcontroller", function ($scope) {
             var modelManager = new ModelManagerV2();
     
+            var defaultLanguage = "fr";
+    
+            // temp
+            $scope.collectionid = "";
+    
             $scope.backItemsStack = [];
     
             $scope.completeDescriptor = modelDescriptorV3;
             $scope.completeModel = modelManager.getModel();
+            
+            $scope.getLocString = function (id) {
+                if (!id) {
+                    return "";
+                }
+
+                if (Localization[defaultLanguage][id.toLowerCase()]) {
+                    return Localization[defaultLanguage][id.toLowerCase()];
+                } else {
+                    return id;
+                }
+            };
 
             $scope.addItem = function (descid, addto, addin) {
                 $scope.descid = descid;
@@ -24,12 +41,21 @@ angular.module("model-monitor", [])
                 $("#modal-desc").modal("show");
             };
             
-            $scope.getName = function (item) {
+            $scope.getName = function (item, defaultvalue) {
                 if (item.name) {
                     return item.name;
                 } else {
-                    return item.uid;
+                    if (defaultvalue !== undefined) {
+                        return defaultvalue;
+                    } else {
+                        return item.uid;
+                    }
                 }
+            };
+            
+            $scope.getNameByUid = function(uid) {
+                var item = modelManager.getItem(uid);
+                return $scope.getName(item);
             };
             
             $scope.closeEditionModal = function () {
@@ -99,5 +125,13 @@ angular.module("model-monitor", [])
             $scope.deleteItem = function (descid, item, $event) {
                 $event.stopPropagation();
                 modelManager.deleteItem(descid, item);
+            };
+            
+            $scope.addItemToCollection = function (uid, targetItemAttribute) {
+                targetItemAttribute.push(uid);
+            };
+            
+            $scope.deleteItemFromCollection = function(index, targetItemAttribute) {
+                targetItemAttribute.splice(index, 1);
             };
         });

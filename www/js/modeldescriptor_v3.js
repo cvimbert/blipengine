@@ -7,10 +7,12 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "referencename",
                 required: true
             },
             file: {
                 type: "string",
+                defaultvalue: "filepath",
                 required: true
             }
         }
@@ -20,10 +22,12 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "packagename",
                 required: true
             },
             identifier: {
                 type: "string",
+                defaultvalue: "identifier",
                 required: true
             }
         }
@@ -33,6 +37,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "soundfilename",
                 required: true
             },
             file: {
@@ -52,6 +57,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "spritefilename",
                 required: true
             },
             file: {
@@ -71,6 +77,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "spritename",
                 required: true
             },
             reference: {
@@ -80,10 +87,12 @@ var modelDescriptorV3 = {
             },
             x: {
                 type: "number",
+                defaultvalue: 0,
                 required: true
             },
             y: {
                 type: "number",
+                defaultvalue: 0,
                 required: true
             }
         }
@@ -93,6 +102,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "spritesgroupname",
                 required: true
             },
             sprites: {
@@ -108,26 +118,30 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "variablename",
                 required: true
             },
             variabletype: {
                 type: "ConditionalAttributesSet",
                 attributesSets: {
                     string: {
-                        value: {
+                        stringvalue: {
                             type: "string",
+                            defaultvalue: "value",
                             required: true
                         }
                     },
                     number: {
-                        value: {
+                        numbervalue: {
                             type: "number",
+                            defaultvalue: 0,
                             required: true
                         }
                     },
                     boolean: {
-                        value: {
+                        stringvalue: {
                             type: "boolean",
+                            defaultvalue: "false",
                             required: true
                         }
                     }
@@ -140,6 +154,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
+                defaultvalue: "conditionname",
                 required: true
             },
             conditiontype: {
@@ -178,20 +193,23 @@ var modelDescriptorV3 = {
         type: "ConditionalAttributesSet",
         attributesSets: {
             string: {
-                value: {
+                stringvalue: {
                     type: "string",
+                    defaultvalue: "value",
                     required: true
                 }
             },
             number: {
-                value: {
+                numbervalue: {
                     type: "number",
+                    defaultvalue: 0,
                     required: true
                 }
             },
             boolean: {
-                value: {
+                booleanvalue: {
                     type: "boolean",
+                    defaultvalue: "false",
                     required: true
                 }
             }
