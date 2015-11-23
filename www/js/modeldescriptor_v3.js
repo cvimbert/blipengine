@@ -106,7 +106,7 @@ var modelDescriptorV3 = {
                 type: "string",
                 required: true
             },
-            type: {
+            variabletype: {
                 type: "ConditionalAttributesSet",
                 attributesSets: {
                     string: {
@@ -138,7 +138,7 @@ var modelDescriptorV3 = {
                 type: "string",
                 required: true
             },
-            type: {
+            conditiontype: {
                 type: "ConditionalAttributesSet",
                 attributesSets: {
                     checkvariable: {

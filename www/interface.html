@@ -27,9 +27,9 @@
                     <div ng-repeat="(descid, desc) in completeDescriptor" ng-if="desc.referenceable" class="model-displayer-container col-md-3">
                         <div id="model-displayer-{{descid}}" class="model-displayer">
                             <span class="title">Créer {{descid}}</span>
-                            <button ng-click="addElement(descid)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                            <button ng-click="addItem(descid, null)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
                             <div class="item-displayer-container">
-                                <div ng-click="editElement(descid, item)" ng-repeat="item in completeModel[descid]" class="item-displayer">
+                                <div ng-click="editItem(item.uid)" ng-repeat="item in completeModel[descid]" class="item-displayer">
                                     {{getName(item)}}
                                     <div ng-click="deleteItem(descid, item, $event)" class="item-delete-button">x</div>
                                 </div>
@@ -45,6 +45,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title">Créer {{descid}}</h4>
+                            <div class="items-stack"><span ng-repeat="stackitem in backItemsStack" ng-if="$index < backItemsStack.length - 1">{{getName(stackitem)}}</span></div>
                         </div>
                         <div class="modal-body">
 
@@ -79,14 +80,14 @@
                                                 <td>
                                                     <select ng-model="item[attributeid]" class="combobox">
                                                         <option></option>
-                                                        <option ng-repeat="(refid, ref) in getReferences(attribute.referencetype)" value="{{refid}}">{{getName(ref)}}</option>
+                                                        <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" value="{{refid}}">{{getName(ref)}}</option>
                                                     </select>
                                                 </td>
                                                 <td class="button-td">
-                                                    <button class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                                                    <button ng- ng-click="editItem(item[attributeid])" class="btn-add btn btn-default" type="submit"><span class="glyphicon-pencil"></span></button>
                                                 </td>
                                                 <td class="button-td">
-                                                    <button class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                                                    <button ng-click="addItem(attribute.referencetype)" class="btn-add btn btn-default" type="submit"><span class="glyphicon-plus"></span></button>
                                                 </td>
                                             </tr>
                                         </table>
@@ -100,8 +101,9 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                            <button ng-click="validate()" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                            <button type="button" class="btn btn-default" ng-click="closeEditionModal()">Annuler</button>
+                            <button ng-if="backItemsStack.length > 1" ng-click="goBack()" type="button" class="btn btn-default">Retour</button>
+                            <button ng-click="validateAndGoBack()" type="button" class="btn btn-primary">OK et retour</button>
                         </div>
                     </div>
                 </div>

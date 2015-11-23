@@ -5,7 +5,7 @@ var ModelDescriptor = function (modelDescriptor) {
     var unitDescriptors = {};
 
     for (var descId in modelDescriptor) {
-        unitDescriptors[descId] = new ObjectModelDescriptor(modelDescriptor[descId], this);
+        unitDescriptors[descId] = new ObjectModelDescriptor(modelDescriptor[descId], this, descId);
     }
 
 
@@ -30,7 +30,7 @@ var ModelDescriptor = function (modelDescriptor) {
 };
 
 
-var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
+var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
 
     var self = this;
 
@@ -80,6 +80,10 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
 
         if (!destObject.uid) {
             destObject.uid = uuid.v4();
+        }
+        
+        if (!destObject.type) {
+            destObject.type = descid;
         }
 
         var fdesc = self.flattenByItem(sourceObject);
@@ -229,12 +233,21 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor) {
 
 var ModelManagerV2 = function () {
 
-    var model = {};
+    var itemsByDescid = {};
+    var items = {};
 
     //delete localStorage["model"];
 
     if (localStorage["model"]) {
-        model = JSON.parse(localStorage["model"]);
+        items = JSON.parse(localStorage["model"]);
+        
+        _.each(items, function(item) {
+            if (!itemsByDescid[item.type]) {
+                itemsByDescid[item.type] = {};
+            }
+            
+            itemsByDescid[item.type][item.uid] = item;
+        });
     }
 
 
@@ -249,15 +262,16 @@ var ModelManagerV2 = function () {
     };
 
     this.saveObject = function (objectType, object) {
-        if (!model[objectType]) {
-            model[objectType] = {};
+        if (!itemsByDescid[objectType]) {
+            itemsByDescid[objectType] = {};
         }
 
-        model[objectType][object.uid] = object;
+        itemsByDescid[objectType][object.uid] = object;
+        items[object.uid] = object;
     };
 
     this.saveToStorage = function () {
-        localStorage["model"] = JSON.stringify(model);
+        localStorage["model"] = JSON.stringify(items);
     };
 
     this.deleteLocalStorage = function () {
@@ -265,21 +279,28 @@ var ModelManagerV2 = function () {
     };
 
     this.getModel = function () {
-        return model;
+        return itemsByDescid;
     };
     
     this.getModelById = function (descid) {
-        return model[descid];
+        return itemsByDescid[descid];
     };
     
     this.deleteItem = function (descid, item) {
-        delete model[descid][item.uid];
+        delete itemsByDescid[descid][item.uid];
+        delete items[item.uid];
     };
     
     this.clearModel = function () {
-        _.each(model, function(modelContent, modelType) {
-            delete model[modelType];
+        _.each(itemsByDescid, function(modelContent, modelType) {
+            delete itemsByDescid[modelType];
         });
+        
+        items = {};
+    };
+    
+    this.getItem = function (uid) {
+        return items[uid];
     };
 
     return this;

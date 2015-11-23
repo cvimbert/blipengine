@@ -20,6 +20,16 @@
     border-top-width: 0;
 }
 
+#modal-desc .items-stack {
+    font-size: 12px;
+    color: #C51F03;
+}
+
+#modal-desc .items-stack span:after {
+    content: ">";
+    margin: 0 5px 0 5px;
+}
+
 .modal-attribute-container {
     padding-top: 4px;
     padding-bottom: 4px;
@@ -37,7 +47,11 @@
 .modal-attribute-container button {
     margin-left: 0px;
     margin-right: 0px;
-    height: 25px;
+    height: 33px;
+    width: 33px;
+    font-size: 27px;
+    line-height: 26px;
+    /* color: #f00; */
     /* vertical-align: middle; */
 }
 
@@ -94,7 +108,7 @@
 }
 
 .modal-attribute-container button {
-    margin-right: 2px;
+    margin-right: 0px;
     margin-left: 2px;
 }
 
