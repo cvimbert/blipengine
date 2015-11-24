@@ -2,6 +2,227 @@
 var modelDescriptorV3 = {
     //Objects
 
+    Sequence: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "sequencename",
+                required: true
+            },
+            spritesgroup: {
+                type: "reference",
+                referencetype: "SpritesGroup",
+                required: true
+            },
+            looptype: {
+                type: "include",
+                includetype: "LoopType",
+                required: false
+            },
+            states: {
+                type: "collection",
+                collectiontype: "reference",
+                referencetype: "GroupState",
+                required: true
+            }
+        }
+    },
+    GroupState: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "groupstatename",
+                required: true
+            },
+            group: {
+                type: "reference",
+                referencetype: "SpritesGroup",
+                required: true
+            },
+            sprites: {
+                type: "collection",
+                collectiontype: "reference",
+                referencetype: "Sprite",
+                required: true
+            }
+        }
+    },
+    Action: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "groupstatename",
+                required: true
+            },
+            condition: {
+                type: "reference",
+                referencetype: "Condition",
+                required: false
+            },
+            actiontype: {
+                type: "ConditionalAttributesSet",
+                required: true,
+                attributesSets: {
+                    displaysprite: {
+                        sprite: {
+                            type: "reference",
+                            referencetype: "Sprite",
+                            required: true
+                        }
+                    },
+                    showgroup: {
+                        group: {
+                            type: "reference",
+                            referencetype: "SpritesGroup",
+                            required: true
+                        }
+                    },
+                    stopclock: {
+                    },
+                    startclock: {
+                    },
+                    hidegroup: {
+                        group: {
+                            type: "reference",
+                            referencetype: "SpritesGroup",
+                            required: true
+                        }
+                    },
+                    stopsequence: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        }
+                    },
+                    nextinsequence: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        }
+                    },
+                    previousinsequence: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        }
+                    },
+                    nextloop: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        }
+                    },
+                    randomaction: {
+                        actions: {
+                            type: "collection",
+                            collectiontype: "reference",
+                            referencetype: "Action",
+                            required: true
+                        },
+                        randmode: {
+                            type: "include",
+                            includetype: "RandMode"
+                        }
+                    },
+                    incvariable: {
+                        variable: {
+                            type: "reference",
+                            referencetype: "Variable",
+                            required: true
+                        }
+                    },
+                    decvariable: {
+                        variable: {
+                            type: "reference",
+                            referencetype: "Variable",
+                            required: true
+                        }
+                    },
+                    setvariable: {
+                        variable: {
+                            type: "reference",
+                            referencetype: "Variable",
+                            required: true
+                        },
+                        value: {
+                            type: "include",
+                            includetype: "VariableValue"
+                        }
+                    },
+                    actions: {
+                        actions: {
+                            type: "collection",
+                            collectiontype: "reference",
+                            referencetype: "Action"
+                        }
+                    },
+                    resetsequence: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        }
+                    },
+                    animiteration: {
+                        
+                    },
+                    togglestart: {
+                        
+                    },
+                    wait: {
+                        
+                    },
+                    setsequencestep: {
+                        
+                    },
+                    setgroupstate: {
+                        
+                    },
+                    disabletrigger: {
+                        
+                    },
+                    enabletrigger: {
+                        
+                    },
+                    disablecontrol: {
+                        
+                    },
+                    enablecontrol: {
+                        
+                    },
+                    enablecontrols: {
+                        
+                    },
+                    disablecontrols: {
+                        
+                    },
+                    playsound: {
+                        
+                    },
+                    cadencyup: {
+                        
+                    }
+                }
+            }
+        }
+    },
+    Trigger: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "groupstatename",
+                required: true
+            }
+        }
+    },
     FileReference: {
         referenceable: true,
         attributes: {
@@ -97,6 +318,29 @@ var modelDescriptorV3 = {
             }
         }
     },
+    ControlSprite: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "controlspritename",
+                required: true
+            },
+            reference: {
+                type: "reference",
+                referencetype: "SpriteFileReference",
+                required: true
+            },
+            x: {
+                type: "number",
+                required: true
+            },
+            y: {
+                type: "number",
+                required: true
+            }
+        }
+    },
     SpritesGroup: {
         referenceable: true,
         attributes: {
@@ -123,6 +367,7 @@ var modelDescriptorV3 = {
             },
             variabletype: {
                 type: "ConditionalAttributesSet",
+                required: true,
                 attributesSets: {
                     string: {
                         stringvalue: {
@@ -159,6 +404,7 @@ var modelDescriptorV3 = {
             },
             conditiontype: {
                 type: "ConditionalAttributesSet",
+                required: true,
                 attributesSets: {
                     checkvariable: {
                         variable: {
@@ -189,8 +435,17 @@ var modelDescriptorV3 = {
         type: "Enumeration",
         enumerationvalues: ["===", "!==", "<", ">", "<=", ">="]
     },
+    LoopType: {
+        type: "Enumeration",
+        enumerationvalues: ["circle", "reset"]
+    },
+    RandMode: {
+        type: "Enumeration",
+        enumerationvalues: ["sequence", "sequencen"]
+    },
     VariableValue: {
         type: "ConditionalAttributesSet",
+        required: true,
         attributesSets: {
             string: {
                 stringvalue: {

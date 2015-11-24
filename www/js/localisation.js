@@ -34,7 +34,16 @@ var Localization = {
        spritename: "Nom du sprite",
        spritesgroupname: "Nom du groupe",
        variablename: "Nom de la variable",
-       conditionname: "Nom de la condition"
+       conditionname: "Nom de la condition",
+       groupstate: "Etat de groupe",
+       group: "Groupe",
+       groupstatename: "Nom de l'état",
+       sequence: "Séquence",
+       sequencename: "Nom de la séquence",
+       looptype: "Type de boucle",
+       states: "Etats",
+       controlspritename: "Nom du sprite de contrôle",
+       controlsprite: "Sprite de contrôle"
     },
     en: {
         

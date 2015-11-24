@@ -41,97 +41,99 @@
             </div>
 
             <div id="modal-desc" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" ng-click="closeEditionModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">{{getLocString(descid)}}</h4>
-                            <div class="items-stack"><span ng-repeat="stackitem in backItemsStack" ng-class="{'final-stack-item': $index === backItemsStack.length - 1}">{{getLocString(stackitem.type) + ": " + getName(stackitem, "")}}</span></div>
-                        </div>
-                        <div class="modal-body">
+                <form name="modalform">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" ng-click="closeEditionModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">{{getLocString(descid)}}</h4>
+                                <div class="items-stack"><span ng-repeat="stackitem in backItemsStack" ng-class="{'final-stack-item': $index === backItemsStack.length - 1}">{{getLocString(stackitem.type) + ": " + getName(stackitem, "")}}</span></div>
+                            </div>
+                            <div class="modal-body">
 
-                            <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor">
-                                <div class="input-group monitor-modal-input-group indented-{{attribute.indentation}}">
-                                    <span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon">
-                                        {{getLocString(attributeid)}}
-                                    </span>
+                                <div class="modal-attribute-container" ng-repeat="(attributeid, attribute) in descriptor">
+                                    <div class="input-group monitor-modal-input-group indented-{{attribute.indentation}}">
+                                        <span class="input-group-addon monitor-modal-input-group-addon" id="basic-addon">
+                                            {{getLocString(attributeid)}}
+                                        </span>
 
-                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="{{getLocString(attribute.defaultvalue)}}" aria-describedby="basic-addon" value="">
+                                        <input ng-model="item[attributeid]" ng-if="attribute.type === 'string'" type="text" class="form-control" placeholder="{{getLocString(attribute.defaultvalue)}}" aria-describedby="basic-addon" value="" ng-required="attribute.required">
 
-                                    <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="">
+                                        <input ng-model="item[attributeid]" ng-if="attribute.type === 'number'" type="number" class="form-control" placeholder="Condition name" aria-describedby="basic-addon" value="" ng-required="attribute.required">
 
-                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" class="combobox">
-                                        <option value="false">{{getLocString("false")}}</option>
-                                        <option value="true">{{getLocString("true")}}</option>
-                                    </select>
+                                        <select ng-model="item[attributeid]" ng-if="attribute.type === 'boolean'" class="combobox" ng-required="attribute.required">
+                                            <option value="false">{{getLocString("false")}}</option>
+                                            <option value="true">{{getLocString("true")}}</option>
+                                        </select>
 
-                                    <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" class="combobox">
-                                        <option></option>
-                                        <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{getLocString(setid)}}</option> 
-                                    </select>
+                                        <select ng-model="item[attributeid]" ng-change="attributeSetSelected()" ng-if="attribute.type === 'ConditionalAttributesSet'" class="combobox" ng-required="attribute.required">
+                                            <option></option>
+                                            <option ng-repeat="(setid, set) in attribute.attributesSets" value="{{setid}}">{{getLocString(setid)}}</option> 
+                                        </select>
 
-                                    <select ng-model="item[attributeid]" ng-if="attribute.type === 'Enumeration'" class="combobox">
-                                        <option></option>
-                                        <option ng-repeat="val in attribute.enumerationvalues" value="{{val}}">{{val}}</option>
-                                    </select>
+                                        <select ng-model="item[attributeid]" ng-if="attribute.type === 'Enumeration'" class="combobox" ng-required="attribute.required">
+                                            <option></option>
+                                            <option ng-repeat="val in attribute.enumerationvalues" value="{{val}}">{{val}}</option>
+                                        </select>
 
-                                    <div ng-if="attribute.type === 'collection'">
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    <select ng-model="collectionid" class="combobox">
-                                                        <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" ng-if="item[attributeid].lastIndexOf(refid) === -1" value="{{refid}}">{{getName(ref)}}</option>
-                                                    </select>
-                                                </td>
-                                                <td class="button-td">
-                                                    <button class="btn-add btn btn-default" ng-click="addItemToCollection(collectionid, item[attributeid])" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
-                                                </td>
-                                                <td class="button-td">
-                                                    <button class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <div ng-if="attribute.type === 'collection'">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <select ng-model="collectionid" class="combobox">
+                                                            <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" ng-if="item[attributeid].lastIndexOf(refid) === -1" value="{{refid}}">{{getName(ref)}}</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="button-td">
+                                                        <button class="btn-add btn btn-default" ng-click="addItemToCollection(collectionid, item[attributeid])" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
+                                                    </td>
+                                                    <td class="button-td">
+                                                        <button class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div ng-if="attribute.type === 'reference'">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <select ng-model="item[attributeid]" class="combobox" ng-required="attribute.required">
+                                                            <option></option>
+                                                            <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" value="{{refid}}">{{getName(ref)}}</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="button-td">
+                                                        <button ng-if="item[attributeid] !== ''" ng-click="editItem(item[attributeid])" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-pencil"></span></button>
+                                                    </td>
+                                                    <td class="button-td">
+                                                        <button ng-click="addItem(attribute.referencetype, item, attributeid)" class="btn-add btn btn-default" type="submit"><span class=" glyphicon glyphicon-plus"></span></button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                        </div>    
+
                                     </div>
 
-                                    <div ng-if="attribute.type === 'reference'">
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    <select ng-model="item[attributeid]" class="combobox">
-                                                        <option></option>
-                                                        <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" value="{{refid}}">{{getName(ref)}}</option>
-                                                    </select>
-                                                </td>
-                                                <td class="button-td">
-                                                    <button ng-if="item[attributeid] !== ''" ng-click="editItem(item[attributeid])" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-pencil"></span></button>
-                                                </td>
-                                                <td class="button-td">
-                                                    <button ng-click="addItem(attribute.referencetype, item, attributeid)" class="btn-add btn btn-default" type="submit"><span class=" glyphicon glyphicon-plus"></span></button>
-                                                </td>
-                                            </tr>
-                                        </table>
-
-                                    </div>    
-
-                                </div>
-
-                                <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && item[attributeid].length > 0">
-                                    <div class="collection-item-displayer" ng-repeat="ref in item[attributeid]">
-                                        {{getNameByUid(ref)}}
-                                        <div ng-click="deleteItemFromCollection($index, item[attributeid])" class="item-delete-button"><span class="glyphicon glyphicon-remove"></span></div>
+                                    <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && item[attributeid].length > 0">
+                                        <div class="collection-item-displayer" ng-repeat="ref in item[attributeid]">
+                                            {{getNameByUid(ref)}}
+                                            <div ng-click="deleteItemFromCollection($index, item[attributeid])" class="item-delete-button"><span class="glyphicon glyphicon-remove"></span></div>
+                                        </div>
                                     </div>
+
                                 </div>
 
                             </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" ng-click="closeEditionModal()">Fermer</button>
-                            <button ng-if="backItemsStack.length > 1" ng-click="goBack()" type="button" class="btn btn-default">Retour</button>
-                            <button ng-click="validateAndGoBack()" type="button" class="btn btn-primary">OK</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" ng-click="closeEditionModal()">Fermer</button>
+                                <button ng-if="backItemsStack.length > 1" ng-click="goBack()" type="button" class="btn btn-default">Retour</button>
+                                <button ng-disabled="!modalform.$valid" ng-click="validateAndGoBack()" type="button" class="btn btn-primary">OK</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="footer">
                 <button ng-click="save()" type="button" class="btn btn-primary">Sauvegarder</button>
