@@ -77,8 +77,12 @@
     background-color: white;
 }
 
-.monitor-modal-input-group {
+.monitor-modal-input-group input.ng-invalid, .monitor-modal-input-group select.ng-invalid {
+    background-color: #E8C0C0;
+}
 
+.monitor-modal-input-group input.ng-valid, .monitor-modal-input-group select.ng-valid {
+    background-color: white;
 }
 
 .monitor-modal-input-group-addon {
@@ -126,7 +130,7 @@
 }
 
 .input-group.indented-1 {
-    padding-left: 30px;
+    /* padding-left: 30px; */
 }
 
 .input-group.indented-2 {

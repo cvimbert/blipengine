@@ -171,43 +171,30 @@ var modelDescriptorV3 = {
                         }
                     },
                     animiteration: {
-                        
                     },
                     togglestart: {
-                        
                     },
                     wait: {
-                        
                     },
                     setsequencestep: {
-                        
                     },
                     setgroupstate: {
-                        
                     },
                     disabletrigger: {
-                        
                     },
                     enabletrigger: {
-                        
                     },
                     disablecontrol: {
-                        
                     },
                     enablecontrol: {
-                        
                     },
                     enablecontrols: {
-                        
                     },
                     disablecontrols: {
-                        
                     },
                     playsound: {
-                        
                     },
                     cadencyup: {
-                        
                     }
                 }
             }
@@ -418,9 +405,34 @@ var modelDescriptorV3 = {
                             required: true
                         },
                         variabletype: {
-                            type: "include",
-                            includetype: "VariableValue",
-                            required: true
+                            type: "LinkedConditionalAttributesSet",
+                            linktype: "referenceattributevalue",
+                            linkedreference: "variable",
+                            linkedattribute: "variabletype",
+                            required: true,
+                            attributesSets: {
+                                string: {
+                                    stringvalue: {
+                                        type: "string",
+                                        defaultvalue: "value",
+                                        required: true
+                                    }
+                                },
+                                number: {
+                                    numbervalue: {
+                                        type: "number",
+                                        defaultvalue: 0,
+                                        required: true
+                                    }
+                                },
+                                boolean: {
+                                    booleanvalue: {
+                                        type: "boolean",
+                                        defaultvalue: "false",
+                                        required: true
+                                    }
+                                }
+                            }
                         }
                     },
                     othertemp: {

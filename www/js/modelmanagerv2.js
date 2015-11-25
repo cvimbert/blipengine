@@ -172,11 +172,23 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
                 flattenByItemAction(item, selectedBranch, destDesc, indentation + 1);
             }
 
-
         } else if (attribute.type === "include") {
 
             var targetDescriptor = modDescriptor.getUnitDescriptor(attribute.includetype).getRaw();
             self.flattenAttribute(item, targetDescriptor, attributeId, destDesc, indentation);
+            
+        } else if (attribute.type === "LinkedConditionalAttributesSet") {
+            
+            if (attribute.linktype === "referenceattributevalue") {
+                var refItemId = item[attribute.linkdedreference];
+                
+                if (!refItemId) {
+                    alert ("pas ok");
+                } else {
+                    alert ("ok: " + refItemId);
+                }
+            }
+            
         }
     };
 
@@ -187,68 +199,6 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
             self.flattenAttribute(item, attribute, attributeId, destDesc, indentation);
         });
     }
-
-
-    this.flatten = function (conditionalAttributesValues) {
-        var descriptorToFlatten = self.getClone();
-        flattenAction(conditionalAttributesValues, descriptorToFlatten);
-        return descriptorToFlatten;
-    };
-
-
-    function flattenAction(conditionalAttributesValues, descriptorToFlatten) {
-
-        for (var attributeId in descriptorToFlatten.attributes) {
-            var currentAttribute = descriptorToFlatten.attributes[attributeId];
-
-            var attrType = getAttributeType(currentAttribute);
-
-            if (attrType === "ConditionalAttributesSet") {
-
-                // dans ce cas on remplace l'attribut par le choix conditionnel
-                if (conditionalAttributesValues[attributeId]) {
-                    // on peut choisir
-                    var choiceValue = conditionalAttributesValues[attributeId];
-
-                    if (currentAttribute.attributesSets[choiceValue]) {
-
-                        var choosenBranch = currentAttribute.attributesSets[choiceValue];
-
-                        // fusion de la branche choisie dans les attributs
-                        _.each(choosenBranch, function (targetAttribute, targetAttributeId) {
-                            descriptorToFlatten.attributes[targetAttributeId] = targetAttribute;
-                        });
-
-                        // et suppression du set
-                        delete descriptorToFlatten.attributes[attributeId];
-
-                        // et ensuite un appel récursif pour traiter les ConditionalAttributSets imbriqués
-                        flattenAction(conditionalAttributesValues, descriptorToFlatten);
-
-                    } else {
-                        console.warn("ObjectModelDescriptor - Pas de branche possible dans le descripteur : " + attributeId);
-                    }
-
-                } else {
-                    console.warn("ObjectModelDescriptor - ConditionalAttributesSet n'a pas de valeur possible : " + attributeId);
-                }
-            } else if (attrType === "Collection") {
-                // cas non traité pour le moment, on considère qu'une collection utilise toujours des références
-
-            } else if (attrType !== "basic" && attrType !== "reference" && attrType !== "Enumeration") {
-                // remplacement brut des données dans le descripteur
-                var targetDesc = modDescriptor.getUnitDescriptor(attrType).getClone();
-
-                _.each(targetDesc, function (targetDescChild, targetDescChildId) {
-                    currentAttribute[targetDescChildId] = targetDescChild;
-                });
-
-                // appel recursif
-                flattenAction(conditionalAttributesValues, descriptorToFlatten);
-            }
-        }
-    }
-    ;
 
 };
 

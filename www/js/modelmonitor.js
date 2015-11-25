@@ -128,7 +128,9 @@ angular.module("model-monitor", [])
             };
             
             $scope.addItemToCollection = function (uid, targetItemAttribute) {
-                targetItemAttribute.push(uid);
+                if (uid && targetItemAttribute) {
+                    targetItemAttribute.push(uid);
+                }
             };
             
             $scope.deleteItemFromCollection = function(index, targetItemAttribute) {
