@@ -54,7 +54,7 @@ var modelDescriptorV3 = {
         attributes: {
             name: {
                 type: "string",
-                defaultvalue: "groupstatename",
+                defaultvalue: "actionname",
                 required: true
             },
             condition: {
@@ -153,7 +153,7 @@ var modelDescriptorV3 = {
                         },
                         value: {
                             type: "include",
-                            includetype: "VariableValue"
+                            includetype: "VariableValueByType"
                         }
                     },
                     actions: {
@@ -171,30 +171,113 @@ var modelDescriptorV3 = {
                         }
                     },
                     animiteration: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        },
+                        period: {
+                            type: "number",
+                            required: true
+                        },
+                        iterations: {
+                            type: "number",
+                            required: true,
+                            defaultvalue: 1
+                        },
+                        oncomplete: {
+                            type: "reference",
+                            referencetype: "Action",
+                            required: false
+                        },
+                        oniteration: {
+                            type: "reference",
+                            referencetype: "Action",
+                            required: false
+                        },
+                        onstep: {
+                            type: "reference",
+                            referencetype: "Action",
+                            required: false
+                        },
+                        stepnumber: {
+                            type: "number",
+                            required: true
+                        }
                     },
                     togglestart: {
                     },
                     wait: {
+                        action: {
+                            type: "reference",
+                            referencetype: "Action",
+                            required: true
+                        },
+                        time: {
+                            type: "number",
+                            required: true,
+                            defaultvalue: 500
+                        }
                     },
                     setsequencestep: {
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        },
+                        step: {
+                            type: "reference",
+                            referencetype: "GroupState",
+                            required: true
+                        }
                     },
                     setgroupstate: {
                     },
                     disabletrigger: {
+                        trigger: {
+                            type: "reference",
+                            referencetype: "Trigger",
+                            required: true
+                        }
                     },
                     enabletrigger: {
+                        trigger: {
+                            type: "reference",
+                            referencetype: "Trigger",
+                            required: true
+                        }
                     },
                     disablecontrol: {
+                        control: {
+                            type: "reference",
+                            referencetype: "Control",
+                            required: true
+                        }
                     },
                     enablecontrol: {
+                        control: {
+                            type: "reference",
+                            referencetype: "Control",
+                            required: true
+                        }
                     },
                     enablecontrols: {
                     },
                     disablecontrols: {
                     },
                     playsound: {
+                        sound: {
+                            type: "reference",
+                            referencetype: "Sound",
+                            required: true
+                        }
                     },
                     cadencyup: {
+                        factor: {
+                            type: "number",
+                            required: true,
+                            defaultvalue: 0.05
+                        }
                     }
                 }
             }
@@ -207,6 +290,60 @@ var modelDescriptorV3 = {
                 type: "string",
                 defaultvalue: "groupstatename",
                 required: true
+            },
+            action: {
+                type: "reference",
+                referencetype: "Action",
+                required: true
+            },
+            condition: {
+                type: "reference",
+                referencetype: "Condition",
+                required: false
+            },
+            triggertype: {
+                type: "ConditionalAttributesSet",
+                required: true,
+                attributesSets: {
+                    controlclick: {
+                        control: {
+                            type: "reference",
+                            referencetype: "Control",
+                            required: true
+                        }
+                    },
+                    clock: {
+                        
+                    },
+                    sequencestepleave: {
+                        
+                    },
+                    sequencestepenter: {
+                        
+                    },
+                    endloop: {
+                        
+                    },
+                    spritescollision: {
+                        sprite1: {
+                            type: "reference",
+                            referencetype: "Sprite",
+                            required: true
+                        },
+                        sprite2: {
+                            type: "reference",
+                            referencetype: "Sprite",
+                            required: true
+                        }
+                    },
+                    timeinterval: {
+                        time: {
+                            type: "number",
+                            required: true,
+                            defaultvalue: 500
+                        }
+                    }
+                }
             }
         }
     },
@@ -441,10 +578,40 @@ var modelDescriptorV3 = {
             }
         }
     },
+    Control: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "controlname",
+                required: true
+            },
+            keyid: {
+                type: "reference",
+                referencetype: "ControlSprite",
+                required: true
+            }
+        }
+    },
+    Sound: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "controlname",
+                required: true
+            },
+            file: {
+                type: "string",
+                required: true
+            }
+        }
+    },
     // à partir d'ici, ce ne sont plus des objets complets
 
     ArithmeticOperator: {
         type: "Enumeration",
+        required: true,
         enumerationvalues: ["===", "!==", "<", ">", "<=", ">="]
     },
     LoopType: {
@@ -457,6 +624,36 @@ var modelDescriptorV3 = {
     },
     VariableValue: {
         type: "ConditionalAttributesSet",
+        required: true,
+        attributesSets: {
+            string: {
+                stringvalue: {
+                    type: "string",
+                    defaultvalue: "value",
+                    required: true
+                }
+            },
+            number: {
+                numbervalue: {
+                    type: "number",
+                    defaultvalue: 0,
+                    required: true
+                }
+            },
+            boolean: {
+                booleanvalue: {
+                    type: "boolean",
+                    defaultvalue: "false",
+                    required: true
+                }
+            }
+        }
+    },
+    VariableValueByType: {
+        type: "LinkedConditionalAttributesSet",
+        linktype: "referenceattributevalue",
+        linkedreference: "variable",
+        linkedattribute: "variabletype",
         required: true,
         attributesSets: {
             string: {

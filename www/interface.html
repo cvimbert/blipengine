@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div id="modal-desc" class="modal fade">
+            <div id="modal-desc" class="modal">
                 <form name="modalform">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -88,7 +88,7 @@
                                                         <button class="btn-add btn btn-default" ng-click="addItemToCollection(collectionid, item[attributeid])" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
                                                     </td>
                                                     <td class="button-td">
-                                                        <button class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                                                        <button ng-click="addItem(attribute.referencetype, item, attributeid, item)" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -98,7 +98,7 @@
                                             <table>
                                                 <tr>
                                                     <td>
-                                                        <select ng-model="item[attributeid]" class="combobox" ng-required="attribute.required">
+                                                        <select ng-change="attributeSetSelected()" ng-model="item[attributeid]" class="combobox" ng-required="attribute.required">
                                                             <option></option>
                                                             <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" value="{{refid}}">{{getName(ref)}}</option>
                                                         </select>

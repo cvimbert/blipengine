@@ -1,11 +1,11 @@
 /* global modelDescriptorV3, _, uuid */
 
-var ModelDescriptor = function (modelDescriptor) {
+var ModelDescriptor = function (modelDescriptor, modelManager) {
 
     var unitDescriptors = {};
 
     for (var descId in modelDescriptor) {
-        unitDescriptors[descId] = new ObjectModelDescriptor(modelDescriptor[descId], this, descId);
+        unitDescriptors[descId] = new ObjectModelDescriptor(modelDescriptor[descId], this, descId, modelManager);
     }
 
 
@@ -30,7 +30,7 @@ var ModelDescriptor = function (modelDescriptor) {
 };
 
 
-var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
+var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid, modelManager) {
 
     var self = this;
 
@@ -77,26 +77,26 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
 
     this.getObjectBySource = function (sourceObject) {
         var destObject = {};
-        
+
         if (sourceObject && sourceObject.uid) {
             destObject.uid = sourceObject.uid;
         }
-        
+
         if (sourceObject && sourceObject.type) {
             destObject.type = sourceObject.type;
         }
 
         var fdesc = self.flattenByItem(sourceObject);
         self.getObject(fdesc, sourceObject, destObject);
-        
+
         if (!destObject.uid) {
             destObject.uid = uuid.v4();
         }
-        
+
         if (!destObject.type) {
             destObject.type = descid;
         }
-        
+
         return destObject;
     };
 
@@ -128,7 +128,7 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
                     case "ConditionalAttributesSet":
                         destObject[attributeId] = "";
                         break;
-                        
+
                     case "collection":
                         destObject[attributeId] = [];
                         break;
@@ -162,8 +162,11 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
 
     this.flattenAttribute = function (item, attribute, attributeId, destDesc, indentation) {
 
-        destDesc[attributeId] = attribute;
-        destDesc[attributeId].indentation = indentation;
+        if (attribute.type !== "LinkedConditionalAttributesSet" && attribute.type !== "include") {
+            destDesc[attributeId] = attribute;
+            destDesc[attributeId].indentation = indentation;
+        }
+
 
         if (attribute.type === "ConditionalAttributesSet") {
 
@@ -176,19 +179,37 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid) {
 
             var targetDescriptor = modDescriptor.getUnitDescriptor(attribute.includetype).getRaw();
             self.flattenAttribute(item, targetDescriptor, attributeId, destDesc, indentation);
-            
+
         } else if (attribute.type === "LinkedConditionalAttributesSet") {
-            
+
             if (attribute.linktype === "referenceattributevalue") {
-                var refItemId = item[attribute.linkdedreference];
-                
-                if (!refItemId) {
-                    alert ("pas ok");
-                } else {
-                    alert ("ok: " + refItemId);
+                var refItemId = item[attribute.linkedreference];
+
+                if (refItemId) {
+
+                    // recupération de l'objet qui possède cet id
+                    var targetItem = modelManager.getItem(refItemId);
+
+                    // récupération de la propriété qui nous intéresse dans cet objet
+                    var targetItemSelectedValue = targetItem[attribute.linkedattribute];
+
+                    // choix de la branche fonction de cette propriété
+                    var selectedBranch = attribute.attributesSets[targetItemSelectedValue];
+
+                    // et flatten de la branche
+                    flattenByItemAction(item, selectedBranch, destDesc, indentation);
                 }
             }
             
+            if (attribute.linktype === "attributevaluenonull") {
+                
+                if (item[attribute.link]) {
+                    
+                    var selectedBranch = attribute.attribute;
+                    flattenByItemAction(item, selectedBranch, destDesc, indentation);
+                }
+            }
+
         }
     };
 
@@ -211,18 +232,18 @@ var ModelManagerV2 = function () {
 
     if (localStorage["model"]) {
         items = JSON.parse(localStorage["model"]);
-        
-        _.each(items, function(item) {
+
+        _.each(items, function (item) {
             if (!itemsByDescid[item.type]) {
                 itemsByDescid[item.type] = {};
             }
-            
+
             itemsByDescid[item.type][item.uid] = item;
         });
     }
 
 
-    var modelDescriptor = new ModelDescriptor(modelDescriptorV3);
+    var modelDescriptor = new ModelDescriptor(modelDescriptorV3, this);
 
     this.getDescriptors = function () {
         return modelDescriptor.getDescriptors();
@@ -252,24 +273,24 @@ var ModelManagerV2 = function () {
     this.getModel = function () {
         return itemsByDescid;
     };
-    
+
     this.getModelById = function (descid) {
         return itemsByDescid[descid];
     };
-    
+
     this.deleteItem = function (descid, item) {
         delete itemsByDescid[descid][item.uid];
         delete items[item.uid];
     };
-    
+
     this.clearModel = function () {
-        _.each(itemsByDescid, function(modelContent, modelType) {
+        _.each(itemsByDescid, function (modelContent, modelType) {
             delete itemsByDescid[modelType];
         });
-        
+
         items = {};
     };
-    
+
     this.getItem = function (uid) {
         return items[uid];
     };

@@ -24,7 +24,7 @@ angular.module("model-monitor", [])
                 if (Localization[defaultLanguage][id.toLowerCase()]) {
                     return Localization[defaultLanguage][id.toLowerCase()];
                 } else {
-                    return "!!" + id + "!!";
+                    return id;
                 }
             };
 
@@ -37,8 +37,12 @@ angular.module("model-monitor", [])
 
 
                 if (addto && addin && $scope.item.uid) {
+                    //alert (rawItemDesc.attributes[addin].type);
                     var pitem = {addto: addto, addin: addin, added: $scope.item.uid};
                     pendingItems[$scope.item.uid] = pitem;
+
+                    // temporaire
+                    //addPendingItems();
                 }
 
                 $scope.descriptor = itemDesc.flattenByItem($scope.item);
@@ -159,8 +163,8 @@ angular.module("model-monitor", [])
                 
                 // attention, erreur là dedans
                 if ($scope.backItemsStack.length > 1) {
-                    var it = $scope.backItemsStack.pop();
-                    $scope.editItemByItem($scope.backItemsStack[$scope.backItemsStack.length - 1], true);
+                    var it = $scope.backItemsStack.shift();
+                    $scope.editItemByItem(it, true);
                 } else {
                     $scope.closeEditionModal();
                 }

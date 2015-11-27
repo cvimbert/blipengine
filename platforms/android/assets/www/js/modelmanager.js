@@ -463,7 +463,7 @@ var ModelManager = function () {
 
     function onSaved(model) {
 
-        //return;
+        return;
         mmanager.firstPassLoading(model);
 
         mmanager.loadModelGroup(model, "SoundFileReference");
