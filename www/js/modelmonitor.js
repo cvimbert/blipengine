@@ -28,6 +28,38 @@ angular.module("model-monitor", [])
                 }
             };
 
+            $scope.getLinkedCollection = function (item, attribute) {
+                var linkedItemAttribute = item[attribute.linkedcollectionattribute];
+                return {};
+            };
+
+            // à déplacer, ça devrait être géré par le modelManager
+            $scope.getReferencesCollection = function (item, attribute) {
+                if (attribute.referencetype === "linkedcollection") {
+
+                    var ret = {};
+
+                    if (item[attribute.linkedcollectionattribute]) {
+                        var linkedItemAttribute = item[attribute.linkedcollectionattribute];
+                        var litem = modelManager.getItem(linkedItemAttribute);
+
+                        var itemValues = litem[attribute.linkedcollectionattributevalue];
+
+                        _.each(itemValues, function (itemUid) {
+                            var it = modelManager.getItem(itemUid);
+                            ret[itemUid] = it;
+                        });
+                    }
+
+                    return ret;
+
+                } else {
+                    return $scope.completeModel[attribute.referencetype];
+                }
+
+                return {};
+            };
+
             $scope.addItem = function (descid, addto, addin) {
                 $scope.descid = descid;
                 var itemDesc = modelManager.getUnitDescriptor(descid);
@@ -50,23 +82,23 @@ angular.module("model-monitor", [])
 
 
             /*function addPendingItems() {
-
-                _.each(pendingItems, function (pitem) {
-
-                    if (pitem) {
-                        var toDesc = modelManager.getUnitDescriptor(pitem.addto.type).getRaw();
-                        var toType = toDesc.attributes[pitem.addin].type;
-
-                        if (toType === "collection") {
-                            pitem.addto[pitem.addin].push($scope.item.uid);
-                        } else if (toType === "reference") {
-                            pitem.addto[pitem.addin] = $scope.item.uid;
-                        }
-                    }
-                });
-
-                pendingItems = {};
-            }*/
+             
+             _.each(pendingItems, function (pitem) {
+             
+             if (pitem) {
+             var toDesc = modelManager.getUnitDescriptor(pitem.addto.type).getRaw();
+             var toType = toDesc.attributes[pitem.addin].type;
+             
+             if (toType === "collection") {
+             pitem.addto[pitem.addin].push($scope.item.uid);
+             } else if (toType === "reference") {
+             pitem.addto[pitem.addin] = $scope.item.uid;
+             }
+             }
+             });
+             
+             pendingItems = {};
+             }*/
 
             function validatePendingItem(uid) {
 
@@ -83,11 +115,11 @@ angular.module("model-monitor", [])
                     }
                 }
             }
-            
+
             function deletePendingItem(uid) {
                 delete pendingItems[uid];
             }
-            
+
             function clearPendingItems() {
                 pendingItems = {};
             }
@@ -154,9 +186,9 @@ angular.module("model-monitor", [])
             };
 
             $scope.goBack = function () {
-                
+
                 deletePendingItem($scope.item.uid);
-                
+
                 // attention, erreur là dedans
                 if ($scope.backItemsStack.length > 1) {
                     var it = $scope.backItemsStack.pop();
@@ -172,12 +204,42 @@ angular.module("model-monitor", [])
             };
 
             $scope.save = function () {
-                modelManager.saveToStorage();
+                modelManager.saveToStorage("base");
             };
 
             $scope.deleteModel = function () {
                 modelManager.clearModel();
                 modelManager.deleteLocalStorage();
+            };
+
+            $scope.saveModelAs = function () {
+                $("#modal-savemodel").modal("show");
+            };
+
+            $scope.saveModelAsConfirm = function () {
+
+            };
+            
+            $scope.getLocalStorage = function () {
+                
+                var ret = {};
+                
+                for (var key in localStorage) {
+                    if (key.lastIndexOf("model-") !== -1) {
+                        var id = key.replace("model-", "");
+                        ret[id] = localStorage[key];
+                    }
+                }
+                
+                return ret;
+            };
+
+            $scope.loadModel = function () {
+                $("#modal-loadmodel").modal("show");
+            };
+
+            $scope.loadModelConfirm = function () {
+
             };
 
             $scope.deleteItem = function (descid, item, $event) {

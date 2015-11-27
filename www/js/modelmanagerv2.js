@@ -230,8 +230,8 @@ var ModelManagerV2 = function () {
 
     //delete localStorage["model"];
 
-    if (localStorage["model"]) {
-        items = JSON.parse(localStorage["model"]);
+    if (localStorage["model-base"]) {
+        items = JSON.parse(localStorage["model-base"]);
 
         _.each(items, function (item) {
             if (!itemsByDescid[item.type]) {
@@ -262,12 +262,22 @@ var ModelManagerV2 = function () {
         items[object.uid] = object;
     };
 
-    this.saveToStorage = function () {
-        localStorage["model"] = JSON.stringify(items);
+    this.saveToStorage = function (id) {
+        if (!id) {
+            localStorage["model"] = JSON.stringify(items);
+        } else {
+            localStorage["model-" + id] = JSON.stringify(items);
+        }
+        
     };
 
-    this.deleteLocalStorage = function () {
-        delete localStorage["model"];
+    this.deleteLocalStorage = function (id) {
+        if (!id) {
+            delete localStorage["model"];
+        } else {
+            delete localStorage["model-" + id];
+        }
+        
     };
 
     this.getModel = function () {

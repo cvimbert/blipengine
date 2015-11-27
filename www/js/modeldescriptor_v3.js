@@ -227,11 +227,22 @@ var modelDescriptorV3 = {
                         },
                         step: {
                             type: "reference",
-                            referencetype: "GroupState",
+                            referencetype: "linkedcollection",
+                            linkedcollectionattribute: "sequence",
+                            linkedcollectionattributevalue: "states",
                             required: true
                         }
                     },
                     setgroupstate: {
+                        state: {
+                            type: "reference",
+                            referencetype: "GroupState",
+                            required: true
+                        },
+                        grouprefresh: {
+                            type: "boolean",
+                            required: true
+                        }
                     },
                     disabletrigger: {
                         trigger: {
@@ -312,14 +323,36 @@ var modelDescriptorV3 = {
                             required: true
                         }
                     },
-                    clock: {
+                    clockperiod: {
                         
                     },
                     sequencestepleave: {
-                        
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        },
+                        step: {
+                            type: "reference",
+                            referencetype: "linkedcollection",
+                            linkedcollectionattribute: "sequence",
+                            linkedcollectionattributevalue: "states",
+                            required: true
+                        }
                     },
                     sequencestepenter: {
-                        
+                        sequence: {
+                            type: "reference",
+                            referencetype: "Sequence",
+                            required: true
+                        },
+                        step: {
+                            type: "reference",
+                            referencetype: "linkedcollection",
+                            linkedcollectionattribute: "sequence",
+                            linkedcollectionattributevalue: "states",
+                            required: true
+                        }
                     },
                     endloop: {
                         
@@ -586,7 +619,7 @@ var modelDescriptorV3 = {
                 defaultvalue: "controlname",
                 required: true
             },
-            keyid: {
+            sprite: {
                 type: "reference",
                 referencetype: "ControlSprite",
                 required: true
