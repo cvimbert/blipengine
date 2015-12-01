@@ -1,12 +1,39 @@
-/* global _, Widgets, angular, modelDescriptorV3, Localization */
+/* global _, Widgets, angular, modelDescriptorV3, Localization, loadform, mainApp, saveform */
+
+//var mainApp = angular.module("mainApp", []);
+
+/*mainApp.config(['$routeProvider',
+    function ($routeProvider) {
+        $routeProvider.
+                when('/addStudent', {
+                    templateUrl: 'addStudent.htm',
+                    controller: 'AddStudentController'
+                }).
+                when('/viewStudents', {
+                    templateUrl: 'viewStudents.htm',
+                    controller: 'ViewStudentsController'
+                }).
+                otherwise({
+                    redirectTo: '/addStudent'
+                });
+    }]);*/
 
 angular.module("model-monitor", [])
         .controller("modelmonitorcontroller", function ($scope) {
             var modelManager = new ModelManagerV2();
 
+
+
+            modelManager.init();
+
             var defaultLanguage = "fr";
 
             var pendingItems = {};
+
+            var modalOptions = {
+                backdrop: "static",
+                keyboard: false
+            };
 
             // temp
             $scope.collectionid = "";
@@ -77,7 +104,7 @@ angular.module("model-monitor", [])
 
                 $scope.backItemsStack.push($scope.item);
 
-                $("#modal-desc").modal("show");
+                $("#modal-desc").modal(modalOptions);
             };
 
 
@@ -162,7 +189,7 @@ angular.module("model-monitor", [])
                     $scope.backItemsStack.push($scope.item);
                 }
 
-                $("#modal-desc").modal("show");
+                $("#modal-desc").modal(modalOptions);
             };
 
             $scope.attributeSetSelected = function () {
@@ -217,20 +244,29 @@ angular.module("model-monitor", [])
             };
 
             $scope.saveModelAsConfirm = function () {
-
+                var typedName = saveform.elements["savemodel-input"].value;
+                
+                if (typedName !== "") {
+                    modelManager.saveToStorage(typedName);
+                } else {
+                    var selected = saveform.elements["savemodel-select"].value;
+                    modelManager.saveToStorage(selected);
+                }
+                
+                $("#modal-savemodel").modal("hide");
             };
-            
+
             $scope.getLocalStorage = function () {
-                
+
                 var ret = {};
-                
+
                 for (var key in localStorage) {
                     if (key.lastIndexOf("model-") !== -1) {
                         var id = key.replace("model-", "");
                         ret[id] = localStorage[key];
                     }
                 }
-                
+
                 return ret;
             };
 
@@ -239,7 +275,9 @@ angular.module("model-monitor", [])
             };
 
             $scope.loadModelConfirm = function () {
-
+                var modelName = loadform.elements["loadmodel-select"].value;
+                modelManager.loadModel(modelName);
+                $("#modal-loadmodel").modal("hide");
             };
 
             $scope.deleteItem = function (descid, item, $event) {

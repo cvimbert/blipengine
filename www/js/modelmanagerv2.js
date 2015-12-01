@@ -200,11 +200,11 @@ var ObjectModelDescriptor = function (objectDescriptor, modDescriptor, descid, m
                     flattenByItemAction(item, selectedBranch, destDesc, indentation);
                 }
             }
-            
+
             if (attribute.linktype === "attributevaluenonull") {
-                
+
                 if (item[attribute.link]) {
-                    
+
                     var selectedBranch = attribute.attribute;
                     flattenByItemAction(item, selectedBranch, destDesc, indentation);
                 }
@@ -227,23 +227,33 @@ var ModelManagerV2 = function () {
 
     var itemsByDescid = {};
     var items = {};
-
-    //delete localStorage["model"];
-
-    if (localStorage["model-base"]) {
-        items = JSON.parse(localStorage["model-base"]);
-
-        _.each(items, function (item) {
-            if (!itemsByDescid[item.type]) {
-                itemsByDescid[item.type] = {};
-            }
-
-            itemsByDescid[item.type][item.uid] = item;
-        });
-    }
-
-
+    
     var modelDescriptor = new ModelDescriptor(modelDescriptorV3, this);
+    
+    var self = this;
+    
+    
+    this.init = function () {
+        self.loadDefaultModel();
+    };
+
+    this.loadModel = function (id) {
+        
+        if (localStorage["model-" + id]) {
+            items = JSON.parse(localStorage["model-" + id]);
+
+            _.each(items, function (item) {
+                if (!itemsByDescid[item.type]) {
+                    itemsByDescid[item.type] = {};
+                }
+
+                itemsByDescid[item.type][item.uid] = item;
+            });
+        }
+    };
+
+
+    
 
     this.getDescriptors = function () {
         return modelDescriptor.getDescriptors();
@@ -261,6 +271,22 @@ var ModelManagerV2 = function () {
         itemsByDescid[objectType][object.uid] = object;
         items[object.uid] = object;
     };
+    
+    this.loadDefaultModel = function () {
+        if (localStorage["defaultModel"]) {
+            self.loadModel(localStorage["defaultModel"]);
+        } else {
+            self.loadModel("base");
+        }
+    };
+    
+    this.saveDefaultModel = function () {
+        if (localStorage["defaultModel"]) {
+            self.saveToStorage(localStorage["defaultModel"]);
+        } else {
+            self.saveToStorage("base");
+        }
+    };
 
     this.saveToStorage = function (id) {
         if (!id) {
@@ -269,6 +295,7 @@ var ModelManagerV2 = function () {
             localStorage["model-" + id] = JSON.stringify(items);
         }
         
+        localStorage["defaultModel"] = id;
     };
 
     this.deleteLocalStorage = function (id) {
@@ -277,7 +304,7 @@ var ModelManagerV2 = function () {
         } else {
             delete localStorage["model-" + id];
         }
-        
+
     };
 
     this.getModel = function () {
