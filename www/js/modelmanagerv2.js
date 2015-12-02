@@ -249,6 +249,8 @@ var ModelManagerV2 = function () {
 
                 itemsByDescid[item.type][item.uid] = item;
             });
+            
+            localStorage["defaultModel"] = id;
         }
     };
 
