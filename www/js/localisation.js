@@ -87,8 +87,12 @@ var Localization = {
        clockperiod: "Période d'horloge",
        spritescollision: "Collision de sprites",
        timeinterval: "Intervalle de temps",
-       triggertype: "Type de trigger"
-       
+       triggertype: "Type de trigger",
+       x: "Position X",
+       y: "Position Y",
+       decorationfilereference: "Fichier décoration",
+       controlfilereference: "Fichier contrôle",
+       controlname: "Nom du contrôle"
     },
     en: {
         

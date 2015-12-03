@@ -21,8 +21,8 @@
                 </div>
                 <div id="spritescontainer" ng-repeat="(spriteid, spritedef) in model['Sprite']">
                     <div id="{{spriteid}}}" class="gamesprite game-element" style="left:{{spritedef.x}}px;top:{{spritedef.y}}px">
-                        <img alt="" src="packages/{{getSpriteFileRef(spritedef).package}}/{{getSpriteFileRef(spritedef).file}}.png">
-                </div>
+                        <img src="packages/{{getSpriteFilePackage(spritedef).identifier}}/{{getSpriteFileRef(spritedef).file}}.png">
+                    </div>
                 </div>
                 <div id="foregroundcontainer">
 

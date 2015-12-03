@@ -14,4 +14,13 @@ angular.module("game", [])
                 var spriteFileRef = $scope.model["SpriteFileReference"][spriteDef.reference];
                 return spriteFileRef;
             };
+            
+            $scope.getSpriteFilePackage = function (spriteDef) {
+                var spriteFileRef = $scope.getSpriteFileRef(spriteDef);
+                var package = $scope.model["Package"][spriteFileRef.package];
+                return package;
+            };
         });
+        
+        
+        

@@ -419,8 +419,7 @@ var modelDescriptorV3 = {
                 required: true
             },
             file: {
-                type: "reference",
-                referencetype: "FileReference",
+                type: "string",
                 required: true
             },
             package: {
@@ -439,8 +438,45 @@ var modelDescriptorV3 = {
                 required: true
             },
             file: {
+                type: "string",
+                required: true
+            },
+            package: {
                 type: "reference",
-                referencetype: "FileReference",
+                referencetype: "Package",
+                required: true
+            }
+        }
+    },
+    DecorationFileReference: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "decorationfilename",
+                required: true
+            },
+            file: {
+                type: "string",
+                required: true
+            },
+            package: {
+                type: "reference",
+                referencetype: "Package",
+                required: true
+            }
+        }
+    },
+    ControlFileReference: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "controlfilename",
+                required: true
+            },
+            file: {
+                type: "string",
                 required: true
             },
             package: {
@@ -485,7 +521,7 @@ var modelDescriptorV3 = {
             },
             reference: {
                 type: "reference",
-                referencetype: "SpriteFileReference",
+                referencetype: "ControlFileReference",
                 required: true
             },
             x: {
@@ -635,7 +671,8 @@ var modelDescriptorV3 = {
                 required: true
             },
             file: {
-                type: "string",
+                type: "reference",
+                referencetype: "SoundFileReference",
                 required: true
             }
         }
