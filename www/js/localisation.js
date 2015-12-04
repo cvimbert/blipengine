@@ -83,7 +83,7 @@ var Localization = {
        actiontype: "Type d'action",
        sound: "Son",
        controlclick: "Clic sur un contrôle",
-       clock: "horloge",
+       clock: "Horloge",
        clockperiod: "Période d'horloge",
        spritescollision: "Collision de sprites",
        timeinterval: "Intervalle de temps",

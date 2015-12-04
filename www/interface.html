@@ -38,7 +38,7 @@
                         <div ng-repeat="(descid, desc) in completeDescriptor" ng-if="desc.referenceable" class="model-displayer-container col-md-3">
                             <div id="model-displayer-{{descid}}" class="model-displayer">
                                 <span class="title">{{getLocString(descid)}}</span>
-                                <button ng-click="addItem(descid, null)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
+                                <button ng-click="addReferenceItem(descid, null)" class="glyphicon-plus btn-add btn btn-default" type="submit"></button>
                                 <div class="item-displayer-container">
                                     <div ng-click="editItem(item.uid)" ng-repeat="item in completeModel[descid]" class="item-displayer">
                                         {{getName(item)}}
@@ -86,22 +86,26 @@
                                                 <option ng-repeat="val in attribute.enumerationvalues" value="{{val}}">{{getLocString(val)}}</option>
                                             </select>
 
-                                            <div ng-if="attribute.type === 'collection'">
+                                            <div ng-if="attribute.type === 'collection' && attribute.collectiontype === 'reference'">
                                                 <table>
                                                     <tr>
                                                         <td>
                                                             <select ng-model="collectionid" class="combobox">
-                                                                <option ng-repeat="(refid, ref) in completeModel[attribute.referencetype]" ng-if="item[attributeid].lastIndexOf(refid) === -1" value="{{refid}}">{{getName(ref)}}</option>
+                                                                <option ng-repeat="(refid, ref) in getReferencesCollection(item, attribute)" ng-if="item[attributeid].lastIndexOf(refid) === -1" value="{{refid}}">{{getName(ref)}}</option>
                                                             </select>
                                                         </td>
                                                         <td class="button-td">
                                                             <button class="btn-add btn btn-default" ng-click="addItemToCollection(collectionid, item[attributeid])" type="submit"><span class="glyphicon glyphicon-arrow-down"></span></button>
                                                         </td>
                                                         <td class="button-td">
-                                                            <button ng-click="addItem(attribute.referencetype, item, attributeid, item)" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                                                            <button ng-click="addReferenceItem(attribute.referencetype, item, attributeid, item)" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
                                                         </td>
                                                     </tr>
                                                 </table>
+                                            </div>
+                                            
+                                            <div ng-if="attribute.type === 'collection' && attribute.collectiontype !== 'reference'">
+                                                <button ng-click="addItem(attribute.collectiontype, item, attributeid, item)" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
                                             </div>
 
                                             <div ng-if="attribute.type === 'reference'">
@@ -117,7 +121,7 @@
                                                             <button ng-if="item[attributeid] !== ''" ng-click="editItem(item[attributeid])" class="btn-add btn btn-default" type="submit"><span class="glyphicon glyphicon-pencil"></span></button>
                                                         </td>
                                                         <td class="button-td">
-                                                            <button ng-click="addItem(attribute.referencetype, item, attributeid)" class="btn-add btn btn-default" type="submit"><span class=" glyphicon glyphicon-plus"></span></button>
+                                                            <button ng-click="addReferenceItem(attribute.referencetype, item, attributeid)" class="btn-add btn btn-default" type="submit"><span class=" glyphicon glyphicon-plus"></span></button>
                                                         </td>
                                                     </tr>
                                                 </table>

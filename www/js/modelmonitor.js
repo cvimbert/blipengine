@@ -3,20 +3,20 @@
 //var mainApp = angular.module("mainApp", []);
 
 /*mainApp.config(['$routeProvider',
-    function ($routeProvider) {
-        $routeProvider.
-                when('/addStudent', {
-                    templateUrl: 'addStudent.htm',
-                    controller: 'AddStudentController'
-                }).
-                when('/viewStudents', {
-                    templateUrl: 'viewStudents.htm',
-                    controller: 'ViewStudentsController'
-                }).
-                otherwise({
-                    redirectTo: '/addStudent'
-                });
-    }]);*/
+ function ($routeProvider) {
+ $routeProvider.
+ when('/addStudent', {
+ templateUrl: 'addStudent.htm',
+ controller: 'AddStudentController'
+ }).
+ when('/viewStudents', {
+ templateUrl: 'viewStudents.htm',
+ controller: 'ViewStudentsController'
+ }).
+ otherwise({
+ redirectTo: '/addStudent'
+ });
+ }]);*/
 
 angular.module("model-monitor", [])
         .controller("modelmonitorcontroller", function ($scope) {
@@ -87,7 +87,7 @@ angular.module("model-monitor", [])
                 return {};
             };
 
-            $scope.addItem = function (descid, addto, addin) {
+            $scope.addReferenceItem = function (descid, addto, addin) {
                 $scope.descid = descid;
                 var itemDesc = modelManager.getUnitDescriptor(descid);
                 //var rawItemDesc = itemDesc.getRaw();
@@ -96,7 +96,26 @@ angular.module("model-monitor", [])
 
 
                 if (addto && addin && $scope.item.uid) {
-                    var pitem = {addto: addto, addin: addin, added: $scope.item.uid};
+                    var pitem = {addto: addto, addin: addin, added: $scope.item.uid, type: "reference"};
+                    pendingItems[$scope.item.uid] = pitem;
+                }
+
+                $scope.descriptor = itemDesc.flattenByItem($scope.item);
+
+                $scope.backItemsStack.push($scope.item);
+
+                $("#modal-desc").modal(modalOptions);
+            };
+
+            $scope.addItem = function (descid, addto, addin) {
+                $scope.descid = descid;
+                var itemDesc = modelManager.getUnitDescriptor(descid);
+
+                $scope.item = itemDesc.getObjectBySource(null);
+
+                //---------
+                if (addto && addin && $scope.item.uid) {
+                    var pitem = {addto: addto, addin: addin, added: $scope.item, type: "object"};
                     pendingItems[$scope.item.uid] = pitem;
                 }
 
@@ -135,10 +154,20 @@ angular.module("model-monitor", [])
                     var toDesc = modelManager.getUnitDescriptor(pitem.addto.type).getRaw();
                     var toType = toDesc.attributes[pitem.addin].type;
 
-                    if (toType === "collection") {
-                        pitem.addto[pitem.addin].push($scope.item.uid);
-                    } else if (toType === "reference") {
-                        pitem.addto[pitem.addin] = $scope.item.uid;
+                    if (pitem.type === "reference") {
+                        if (toType === "collection") {
+                            pitem.addto[pitem.addin].push($scope.item.uid);
+                        } else if (toType === "reference") {
+                            pitem.addto[pitem.addin] = $scope.item.uid;
+                        }
+                    }
+                    
+                    if (pitem.type === "object") {
+                        if (toType === "collection") {
+                            pitem.addto[pitem.addin].push(pitem.added);
+                        } else if (toType === "reference") {
+                            pitem.addto[pitem.addin] = pitem.added;
+                        }
                     }
                 }
             }
@@ -245,14 +274,14 @@ angular.module("model-monitor", [])
 
             $scope.saveModelAsConfirm = function () {
                 var typedName = saveform.elements["savemodel-input"].value;
-                
+
                 if (typedName !== "") {
                     modelManager.saveToStorage(typedName);
                 } else {
                     var selected = saveform.elements["savemodel-select"].value;
                     modelManager.saveToStorage(selected);
                 }
-                
+
                 $("#modal-savemodel").modal("hide");
             };
 

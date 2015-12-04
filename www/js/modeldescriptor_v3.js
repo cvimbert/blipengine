@@ -44,7 +44,10 @@ var modelDescriptorV3 = {
             sprites: {
                 type: "collection",
                 collectiontype: "reference",
-                referencetype: "Sprite",
+                referencetype: "linkedcollection",
+                linkedcollectionattribute: "group",
+                linkedcollectionattributevalue: "sprites",
+                //referencetype: "Sprite",
                 required: true
             }
         }
@@ -324,7 +327,6 @@ var modelDescriptorV3 = {
                         }
                     },
                     clockperiod: {
-                        
                     },
                     sequencestepleave: {
                         sequence: {
@@ -355,7 +357,6 @@ var modelDescriptorV3 = {
                         }
                     },
                     endloop: {
-                        
                     },
                     spritescollision: {
                         sprite1: {
@@ -677,8 +678,46 @@ var modelDescriptorV3 = {
             }
         }
     },
+    ConditionalGroupStateSet: {
+        referenceable: true,
+        attributes: {
+            name: {
+                type: "string",
+                defaultvalue: "conditionalgroupstatename",
+                required: true
+            },
+            group: {
+                type: "reference",
+                referencetype: "SpritesGroup",
+                required: true
+            },
+            conditionalstates: {
+                type: "collection",
+                collectiontype: "ConditionalGroupState",
+                required: true
+            },
+            defaultstate: {
+                type: "reference",
+                referencetype: "GroupState",
+                required: true
+            }
+        }
+    },
     // à partir d'ici, ce ne sont plus des objets complets
-
+    ConditionalGroupState: {
+        attributes: {
+            state: {
+                type: "reference",
+                referencetype: "GroupState",
+                required: true
+            },
+            condition: {
+                type: "reference",
+                referencetype: "Condition",
+                required: true
+            }
+        }
+    },
     ArithmeticOperator: {
         type: "Enumeration",
         required: true,
