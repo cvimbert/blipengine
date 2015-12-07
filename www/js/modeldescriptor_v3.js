@@ -381,21 +381,6 @@ var modelDescriptorV3 = {
             }
         }
     },
-    FileReference: {
-        referenceable: true,
-        attributes: {
-            name: {
-                type: "string",
-                defaultvalue: "referencename",
-                required: true
-            },
-            file: {
-                type: "string",
-                defaultvalue: "filepath",
-                required: true
-            }
-        }
-    },
     Package: {
         referenceable: true,
         attributes: {

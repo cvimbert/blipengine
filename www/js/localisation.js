@@ -92,7 +92,12 @@ var Localization = {
        y: "Position Y",
        decorationfilereference: "Fichier décoration",
        controlfilereference: "Fichier contrôle",
-       controlname: "Nom du contrôle"
+       controlname: "Nom du contrôle",
+       conditionalstates: "Etats conditionnels",
+       defaultstate: "Etat par défaut",
+       conditionalgroupstateset: "Set d'états conditionnels",
+       state: "Etat",
+       conditionalgroupstate: "Etat conditionnel"
     },
     en: {
         

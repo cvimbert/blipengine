@@ -62,6 +62,9 @@ angular.module("model-monitor", [])
 
             // à déplacer, ça devrait être géré par le modelManager
             $scope.getReferencesCollection = function (item, attribute) {
+                
+                // ceci est peut-être à supprimer pour un truc plus souple
+                
                 if (attribute.referencetype === "linkedcollection") {
 
                     var ret = {};
@@ -207,6 +210,10 @@ angular.module("model-monitor", [])
                 var item = modelManager.getItem(uid);
                 $scope.editItemByItem(_.clone(item));
             };
+            
+            $scope.editSubItem = function (index, item) {
+                $scope.editItemByItem(_.clone(item[index]));
+            };
 
             $scope.editItemByItem = function (item, isback) {
                 // attention, ici pas de clone, donc pas de données temporaires d'item
@@ -223,6 +230,10 @@ angular.module("model-monitor", [])
 
             $scope.attributeSetSelected = function () {
                 $scope.item = modelManager.getUnitDescriptor($scope.descid).getObjectBySource($scope.item);
+                
+                if (pendingItems[$scope.item.uid]) {
+                    pendingItems[$scope.item.uid].added = $scope.item;
+                }
 
                 // on remplace l'objet courant dans la stack
                 $scope.backItemsStack[$scope.backItemsStack.length - 1] = $scope.item;

@@ -130,16 +130,9 @@
 
                                         </div>
 
-                                        <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && attribute.collectiontype === 'reference' && item[attributeid].length > 0">
+                                        <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && item[attributeid].length > 0">
                                             <div class="collection-item-displayer" ng-repeat="ref in item[attributeid]">
                                                 {{getNameByUid(ref)}}
-                                                <div ng-click="deleteItemFromCollection($index, item[attributeid])" class="item-delete-button"><span class="glyphicon glyphicon-remove"></span></div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="collection-item-displayer-container" ng-if="attribute.type === 'collection' && attribute.collectiontype !== 'reference' && item[attributeid].length > 0">
-                                            <div class="collection-item-displayer" ng-repeat="ref in item[attributeid]" ng-click="editSubItem($index, item[attributeid])">
-                                                item {{$index}}
                                                 <div ng-click="deleteItemFromCollection($index, item[attributeid])" class="item-delete-button"><span class="glyphicon glyphicon-remove"></span></div>
                                             </div>
                                         </div>
